@@ -147,7 +147,7 @@
             <div>
               <input type="text" id="exp-name" required placeholder="Nama Pengeluaran" class="w-full bg-gray-100 rounded-2xl px-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2896FF] transition-shadow placeholder-gray-400 font-medium text-sm sm:text-base">
             </div>
-            <div class="flex gap-3 sm:gap-4 w-full">
+            <div class="flex gap-3 sm:gap-4 w-full overflow-hidden">
               
               <!-- KATEGORI -->
               <!-- [BARU] Gunakan flex-1 dan min-w-0 -->
@@ -168,7 +168,7 @@
               <!-- TANGGAL -->
               <!-- [BARU] Gunakan flex-1 dan min-w-0 -->
               <div class="relative flex-1 min-w-0">
-                <input type="date" id="exp-date" required onclick="this.showPicker()" class="w-full bg-gray-100 rounded-2xl pl-3 sm:pl-4 pr-10 py-3.5 outline-none focus:ring-2 focus:ring-[#2896FF] transition-shadow font-medium text-sm sm:text-base tracking-tighter sm:tracking-normal text-gray-700 cursor-pointer">
+                <input type="date" id="exp-date" required onclick="this.showPicker()" class="w-full min-w-0 appearance-none bg-gray-100 rounded-2xl pl-3 sm:pl-4 pr-10 py-3.5 outline-none focus:ring-2 focus:ring-[#2896FF] transition-shadow font-medium text-sm sm:text-base tracking-tighter sm:tracking-normal text-gray-700 cursor-pointer">
                 <div class="absolute inset-y-0 right-0 pr-3 sm:pr-4 flex items-center pointer-events-none">
                   <i data-lucide="calendar" class="w-5 h-5 text-gray-400"></i>
                 </div>
