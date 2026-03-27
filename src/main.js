@@ -1,5 +1,5 @@
 import './style.css'
-import { createIcons, PlusCircle, PieChart, Trash2, Calendar, Tags, Utensils, Car, Gamepad2, Receipt, Package, Wallet, LogOut, Mail, Lock, Eye, EyeOff, AlertCircle, ArrowRight, User } from 'lucide'
+import { createIcons, PlusCircle, PieChart, Trash2, Calendar, Tags, Utensils, Car, Gamepad2, Receipt, Package, Wallet, LogOut, Mail, Lock, Eye, EyeOff, AlertCircle, ArrowRight, User, ChevronDown } from 'lucide'
 import Chart from 'chart.js/auto'
 import { createClient } from '@supabase/supabase-js'
 
@@ -284,7 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // --- LOGIN / REGISTER LOGIC ---
-  createIcons({ icons: { PlusCircle, PieChart, Trash2, Calendar, Tags, Utensils, Car, Gamepad2, Receipt, Package, Wallet, LogOut, Mail, Lock, Eye, EyeOff, AlertCircle, ArrowRight, User } });
+  createIcons({ icons: { PlusCircle, PieChart, Trash2, Calendar, Tags, Utensils, Car, Gamepad2, Receipt, Package, Wallet, LogOut, Mail, Lock, Eye, EyeOff, AlertCircle, ArrowRight, User, ChevronDown } });
 
   let isLoginMode = true;
   const authTitle = document.getElementById('auth-title');

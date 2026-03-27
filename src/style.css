@@ -27,11 +27,6 @@
   input[type="password"]::-ms-clear {
     display: none;
   }
-
-  input[type="date"]::-webkit-calendar-picker-indicator {
-    display: none;
-    -webkit-appearance: none;
-  }
   
   @keyframes fadeIn {
     from {
@@ -42,6 +37,11 @@
       opacity: 1;
       transform: translateY(0) scale(1);
     }
+  }
+
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    display: none;
+    -webkit-appearance: none;
   }
 
   /* Hilangkan panah default pada input angka (number) agar lebih rapi */

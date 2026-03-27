@@ -94,7 +94,7 @@
   <div id="app-container" class="hidden max-w-md mx-auto md:max-w-5xl md:flex md:gap-8 pb-24 md:pb-8 pt-8 px-4 md:px-8 min-h-screen">
 
     <!-- Navigasi -->
-    <nav class="fixed bottom-0 left-0 w-full backdrop-blur-xl bg-white/70 flex justify-evenly items-center p-3 z-50 md:sticky md:top-8 md:self-start md:w-64 md:flex-col md:justify-start md:gap-4 md:rounded-[2rem] md:shadow-[0_8px_30px_rgb(0,0,0,0.04)] md:h-fit md:p-6 transition-all border-t md:border border-black/5">
+    <nav class="fixed bottom-0 left-0 w-full backdrop-blur-xl bg-white/70 flex justify-evenly items-center pt-3 px-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] z-50 md:sticky md:top-8 md:self-start md:w-64 md:flex-col md:justify-start md:gap-4 md:rounded-[2rem] md:shadow-[0_8px_30px_rgb(0,0,0,0.04)] md:h-fit md:p-6 transition-all border-t md:border border-black/5">
       <div class="hidden md:flex flex-col mb-8 w-full">
         <div class="flex items-center gap-3 mb-1">
           <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-[#55E1FF] to-[#2896FF] flex items-center justify-center text-white shadow-[0_4px_10px_rgba(40,150,255,0.3)]">
@@ -148,15 +148,30 @@
               <input type="text" id="exp-name" required placeholder="Nama Pengeluaran" class="w-full bg-gray-100 rounded-2xl px-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2896FF] transition-shadow placeholder-gray-400 font-medium text-sm sm:text-base">
             </div>
             <div class="grid grid-cols-2 gap-3 sm:gap-4">
-              <select id="exp-category" required class="w-full bg-gray-100 rounded-2xl px-3 sm:px-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2896FF] transition-shadow font-medium text-sm sm:text-base text-gray-700 appearance-none cursor-pointer">
-                <option value="" disabled selected>Kategori</option>
-                <option value="Makanan">Makanan</option>
-                <option value="Transportasi">Transportasi</option>
-                <option value="Hiburan">Hiburan</option>
-                <option value="Tagihan">Tagihan</option>
-                <option value="Lainnya">Lainnya</option>
-              </select>
-              <input type="date" id="exp-date" required class="w-full bg-gray-100 rounded-2xl px-2 sm:px-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2896FF] transition-shadow font-medium text-sm sm:text-base tracking-tighter sm:tracking-normal text-gray-700 cursor-pointer">
+              <!-- KATEGORI dengan Icon Chevron Down -->
+              <div class="relative">
+                <!-- Tambahkan pr-10 agar teks tidak menabrak icon -->
+                <select id="exp-category" required class="w-full bg-gray-100 rounded-2xl pl-4 pr-10 py-3.5 outline-none focus:ring-2 focus:ring-[#2896FF] transition-shadow font-medium text-sm sm:text-base text-gray-700 appearance-none cursor-pointer">
+                  <option value="" disabled selected>Kategori</option>
+                  <option value="Makanan">Makanan</option>
+                  <option value="Transportasi">Transportasi</option>
+                  <option value="Hiburan">Hiburan</option>
+                  <option value="Tagihan">Tagihan</option>
+                  <option value="Lainnya">Lainnya</option>
+                </select>
+                <!-- Icon Lucide Dropdown -->
+                <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                  <i data-lucide="chevron-down" class="w-5 h-5 text-gray-400"></i>
+                </div>
+              </div>
+              <div class="relative">
+                <!-- Tambahkan pr-10 agar teks tidak menabrak icon -->
+                <input type="date" id="exp-date" required onclick="this.showPicker()" class="w-full bg-gray-100 rounded-2xl pl-3 sm:pl-4 pr-10 py-3.5 outline-none focus:ring-2 focus:ring-[#2896FF] transition-shadow font-medium text-sm sm:text-base tracking-tighter sm:tracking-normal text-gray-700 cursor-pointer">
+                <!-- Icon Lucide Calendar -->
+                <div class="absolute inset-y-0 right-0 pr-3 sm:pr-4 flex items-center pointer-events-none">
+                  <i data-lucide="calendar" class="w-5 h-5 text-gray-400"></i>
+                </div>
+              </div>
             </div>
             <div>
               <div class="relative">
@@ -219,15 +234,15 @@
         <!-- Charts Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div class="bg-white rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-black/5">
-            <h3 class="font-bold tracking-tight mb-4">Berdasarkan Kategori</h3>
-            <div class="relative h-48 w-full">
-              <canvas id="categoryChart"></canvas>
-            </div>
-          </div>
-          <div class="bg-white rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-black/5">
             <h3 class="font-bold tracking-tight mb-4">Tren 7 Hari Terakhir</h3>
             <div class="relative h-48 w-full">
               <canvas id="trendChart"></canvas>
+            </div>
+          </div>
+          <div class="bg-white rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-black/5">
+            <h3 class="font-bold tracking-tight mb-4">Berdasarkan Kategori</h3>
+            <div class="relative h-48 w-full">
+              <canvas id="categoryChart"></canvas>
             </div>
           </div>
         </div>
