@@ -94,7 +94,7 @@
   <div id="app-container" class="hidden max-w-md mx-auto md:max-w-5xl md:flex md:gap-8 pb-24 md:pb-8 pt-8 px-4 md:px-8 min-h-screen">
 
     <!-- Navigasi -->
-    <nav class="fixed bottom-4 right-1/2 backdrop-blur-xl bg-white/90 flex items-center gap-2 px-2 py-2 rounded-full shadow-[0_8px_30px_rgba(0,0,0,0.08)] z-50 border border-black/5">
+    <nav class="fixed bottom-0 left-0 w-full backdrop-blur-xl bg-white/90 flex justify-evenly items-center pt-3 px-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] z-50 md:sticky md:top-8 md:self-start md:w-64 md:flex-col md:justify-start md:gap-4 md:rounded-[2rem] md:shadow-[0_8px_30px_rgb(0,0,0,0.04)] md:h-fit md:p-6 transition-all border-t border-black/10 md:border will-change-transform">
       <div class="hidden md:flex flex-col mb-8 w-full">
         <div class="flex items-center gap-3 mb-1">
           <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-[#55E1FF] to-[#2896FF] flex items-center justify-center text-white shadow-[0_4px_10px_rgba(40,150,255,0.3)]">
@@ -105,20 +105,21 @@
         <p id="greeting-text-desktop" class="text-xs font-bold text-slate-400 mt-1 truncate">Halo, ...</p>
       </div>
       
-      <a href="#/" class="nav-link flex items-center gap-2 px-4 py-2 rounded-full text-gray-500 font-semibold text-sm transition-all">
-        <i data-lucide="plus-circle" class="w-5 h-5"></i>
-        <span class="hidden sm:inline">Input</span>
+      <a href="#/" class="nav-link flex flex-col md:flex-row items-center justify-center md:justify-start gap-1 md:gap-4 w-40 h-[64px] md:w-full md:h-auto rounded-2xl text-gray-500 hover:bg-black/5 hover:text-gray-900 transition-all text-[11px] md:text-sm font-bold md:p-3">
+        <i data-lucide="plus-circle" class="w-[22px] h-[22px] md:w-5 md:h-5"></i>
+        <span>Input</span>
       </a>
       
-      <a href="#/analytics" class="nav-link flex items-center gap-2 px-4 py-2 rounded-full text-gray-500 font-semibold text-sm transition-all">
-        <i data-lucide="pie-chart" class="w-5 h-5"></i>
-        <span class="hidden sm:inline">Analytics</span>
+      <a href="#/analytics" class="nav-link flex flex-col md:flex-row items-center justify-center md:justify-start gap-1 md:gap-4 w-40 h-[64px] md:w-full md:h-auto rounded-2xl text-gray-500 hover:bg-black/5 hover:text-gray-900 transition-all text-[11px] md:text-sm font-bold md:p-3">
+        <i data-lucide="pie-chart" class="w-[22px] h-[22px] md:w-5 md:h-5"></i>
+        <span>Analytics</span>
       </a>
 
       <!-- [BARU] Tombol Logout -->
       <div class="md:mt-auto md:w-full pt-0 md:pt-4 md:border-t border-black/5">
-        <button id="btn-logout" class="flex items-center gap-2 px-4 py-2 rounded-full text-red-400 font-semibold text-sm transition-all hover:bg-red-50">
-          <i data-lucide="log-out" class="w-5 h-5"></i>
+        <button id="btn-logout" class="flex flex-col md:flex-row items-center justify-center md:justify-start gap-1 md:gap-4 w-20 h-[64px] md:w-full md:h-auto rounded-2xl text-red-400 hover:bg-red-50 hover:text-red-500 transition-all text-[11px] md:text-sm font-bold md:p-3">
+          <i data-lucide="log-out" class="w-[22px] h-[22px] md:w-5 md:h-5"></i>
+          <span>Keluar</span>
         </button>
       </div>
     </nav>
@@ -151,7 +152,7 @@
               <!-- KATEGORI -->
               <!-- [BARU] Gunakan flex-1 dan min-w-0 -->
               <div class="relative flex-1 min-w-0">
-                <select id="exp-category" required class="w-full bg-gray-100 rounded-2xl pl-4 pr-10 py-3.5 outline-none focus:ring-2 focus:ring-transparent transition-shadow font-medium text-sm sm:text-base text-gray-700 appearance-none cursor-pointer">
+                <select id="exp-category" required class="w-full bg-gray-100 rounded-2xl pl-4 pr-10 py-3.5 outline-none focus:ring-2 focus:ring-[#2896FF] transition-shadow font-medium text-sm sm:text-base text-gray-700 appearance-none cursor-pointer">
                   <option value="" disabled selected>Kategori</option>
                   <option value="Makanan">Makanan</option>
                   <option value="Transportasi">Transportasi</option>
@@ -167,7 +168,7 @@
               <!-- TANGGAL -->
               <!-- [BARU] Gunakan flex-1 dan min-w-0 -->
               <div class="relative flex-1 min-w-0">
-                <input type="date" id="exp-date" required onclick="this.showPicker()" class="w-full min-w-0 appearance-none bg-gray-100 rounded-2xl pl-3 sm:pl-4 pr-10 py-3.5 outline-none focus:ring-2 focus:ring-transparent transition-shadow font-medium text-sm sm:text-base tracking-tighter sm:tracking-normal text-gray-700 cursor-pointer">
+                <input type="date" id="exp-date" required onclick="this.showPicker()" class="w-full min-w-0 appearance-none bg-gray-100 rounded-2xl pl-3 sm:pl-4 pr-10 py-3.5 outline-none focus:ring-2 focus:ring-[#2896FF] transition-shadow font-medium text-sm sm:text-base tracking-tighter sm:tracking-normal text-gray-700 cursor-pointer">
                 <div class="absolute inset-y-0 right-0 pr-3 sm:pr-4 flex items-center pointer-events-none">
                   <i data-lucide="calendar" class="w-5 h-5 text-gray-400"></i>
                 </div>

@@ -240,8 +240,8 @@ const handleRoute = () => {
   const navLinks = document.querySelectorAll('.nav-link');
 
   navLinks.forEach(link => {
-    if (link.getAttribute('href') === hash) { link.classList.add('bg-gradient-to-r', 'from-[#55E1FF]', 'to-[#2896FF]', 'text-white', 'shadow'); link.classList.remove('text-gray-500'); } 
-    else { link.classList.remove('bg-gradient-to-r', 'from-[#55E1FF]', 'to-[#2896FF]', 'text-white', 'shadow'); link.classList.add('text-gray-500'); }
+    if (link.getAttribute('href') === hash) { link.classList.add('text-[#2896FF]', 'bg-[#2896FF]/10'); link.classList.remove('text-gray-500'); } 
+    else { link.classList.remove('text-[#2896FF]', 'bg-[#2896FF]/10'); link.classList.add('text-gray-500'); }
   });
 
   if (hash === '#/analytics') { pageHome.classList.add('hidden'); pageAnalytics.classList.remove('hidden'); updateAnalytics(false); } 
