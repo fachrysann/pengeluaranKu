@@ -9,28 +9,59 @@
 <body class="bg-gradient-to-b from-[#9ccfff] to-[#F5F5F7] to-40%  min-h-screen bg-fixed bg-no-repeat text-gray-900 antialiased selection:bg-[#2896FF] selection:text-white">
 
   <!-- ========================================== -->
-  <!-- HALAMAN AUTENTIKASI (LOGIN / REGISTER)       -->
+  <!-- HALAMAN AUTENTIKASI (LOGIN / REGISTER)     -->
   <!-- ========================================== -->
-  <div id="auth-container" class="min-h-screen flex items-center justify-center p-4 transition-all">
-    <div class="bg-white rounded-[2rem] p-8 sm:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] w-full max-w-[400px] border border-black/5 animate-fade-in relative overflow-hidden">
+  <!-- [UBAH] Tambahkan relative pada auth-container -->
+  <div id="auth-container" class="min-h-screen flex flex-col justify-end sm:justify-center items-center transition-all relative">
+    
+    <!-- Background Image / Hero Illustration -->
+    <!-- [UBAH] Ubah tinggi di HP menjadi 65vh agar menutupi area belakang dengan pas -->
+    <div class="absolute top-0 left-0 w-full h-[65vh] sm:h-full z-0 overflow-hidden pointer-events-none bg-gradient-to-br from-[#55E1FF] to-[#2896FF]">
       
-      <!-- Hiasan Glow di belakang Card (Opsional, memberi kesan premium) -->
+      <!--[BARU] Tambahkan class: grayscale, contrast-125, opacity-60, dan mix-blend-multiply pada gambar -->
+      <img src="src/assets/home5.png" class="w-full h-full object-cover grayscale contrast-125 opacity-60 mix-blend-multiply">
+
+      <!-- Gradient putih dari bawah agar membaur sempurna dengan Card Login di bawahnya -->
+      <div class="absolute inset-0 bg-gradient-to-t from-white via-white/60 to-transparent"></div>
+    </div>
+
+    <!-- [BARU] Teks Slogan (Mobile Only) - Diletakkan tepat DI ATAS Card Login -->
+    <div class="w-full max-w-[400px] px-6 pb-6 relative z-10 sm:hidden">
+      <!-- Kotak Kaca Buram (Glassmorphism) agar teks 100% terbaca jelas tanpa shadow -->
+      <div>
+        <h2 class="text-3xl font-black text-slate-900 leading-tight">Solusi Cerdas Kelola Keuangan</h2>
+        <p class="text-base text-slate-700 mt-1 font-bold">Catat, pantau, dan kendalikan pengeluaranmu.</p>
+      </div>
+    </div>
+
+    <!-- [UBAH] Tambahkan relative z-10 agar Card putih ini melayang di atas gambar -->
+    <div class="bg-white rounded-t-[2.5rem] sm:rounded-[2rem] p-6 sm:p-8 pb-10 sm:pb-8 shadow-[0_-8px_30px_rgb(0,0,0,0.04)] sm:shadow-[0_8px_30px_rgb(0,0,0,0.04)] w-full max-w-[400px] border-t sm:border border-black/5 animate-fade-in relative z-10 overflow-hidden">
+      
+      <!-- Drag Handle (Garis abu-abu kecil di atas, hanya muncul di HP) -->
+      <div class="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-6 sm:hidden"></div>
+
+      <!-- Hiasan Glow di belakang Card -->
       <div class="absolute -top-20 -right-20 w-40 h-40 bg-gradient-to-br from-[#55E1FF] to-[#2896FF] rounded-full blur-3xl opacity-10 pointer-events-none"></div>
 
-      <!-- Logo & Header -->
-      <div class="flex flex-col items-center justify-center mb-8 relative z-10">
-        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#55E1FF] to-[#2896FF] flex items-center justify-center text-white shadow-[0_4px_12px_rgba(40,150,255,0.3)] mb-5">
-          <i data-lucide="wallet" class="w-8 h-8"></i>
+      <!-- Logo Kecil di Atas -->
+      <div class="flex items-center justify-center gap-3 mb-6 relative z-10">
+        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#55E1FF] to-[#2896FF] flex items-center justify-center text-white shadow-[0_4px_12px_rgba(40,150,255,0.3)]">
+          <i data-lucide="wallet" class="w-6 h-6"></i>
         </div>
-        <h2 id="auth-title" class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-800 mb-1">Selamat Datang</h2>
-        <p id="auth-subtitle" class="text-sm text-slate-500 font-medium text-center">Silakan masuk untuk mengelola keuanganmu.</p>
+        <h1 class="text-2xl font-bold tracking-tight text-slate-800">PengeluaranKu</h1>
       </div>
 
-      <!-- Kotak Pesan Error (Sembunyi secara default) -->
-      <div id="auth-error-box" class="hidden mb-4 p-3 bg-red-50 border border-red-100 rounded-xl flex items-center gap-2 animate-fade-in">
-        <!-- Hapus mt-0.5 pada icon -->
+
+      <!-- Top Toggle (Login / Register) -->
+      <div class="relative flex bg-gray-100/80 rounded-2xl p-1 mb-6 border border-black/5 z-10">
+        <div id="auth-slider-bg" class="absolute top-1 bottom-1 left-1 w-[calc(50%-4px)] bg-white rounded-xl shadow-[0_2px_8px_rgb(0,0,0,0.08)] transition-transform duration-300 ease-in-out transform translate-x-0"></div>
+        <button id="btn-mode-login" class="relative z-10 w-1/2 py-2.5 text-sm font-bold text-slate-900 transition-colors cursor-pointer">Masuk</button>
+        <button id="btn-mode-register" class="relative z-10 w-1/2 py-2.5 text-sm font-bold text-gray-400 transition-colors cursor-pointer">Daftar</button>
+      </div>
+
+      <!-- Kotak Pesan Error -->
+      <div id="auth-error-box" class="hidden mb-4 p-3 bg-red-50 border border-red-100 rounded-xl flex items-center gap-2 animate-fade-in relative z-10">
         <i data-lucide="alert-circle" class="w-5 h-5 text-red-500 flex-shrink-0"></i>
-        <!-- Hapus leading-tight agar teks natural di tengah -->
         <p id="auth-error-text" class="text-sm text-red-600 font-medium"></p>
       </div>
 
@@ -66,253 +97,275 @@
           </button>
         </div>
 
-        <!-- Link Lupa Password -->
-        <div id="forgot-password-container" class="flex justify-end pt-1">
-          <a href="#" class="text-xs font-bold text-[#2896FF] hover:text-blue-700 transition-colors">Lupa kata sandi?</a>
+        <!-- Options Row (Remember Me & Forgot Password) -->
+        <div class="flex items-center justify-between pt-1 pb-2">
+          <label class="flex items-center gap-2 cursor-pointer group">
+            <div class="relative flex items-center justify-center w-4 h-4 rounded border border-gray-300 bg-white group-hover:border-[#2896FF] transition-colors">
+              <input type="checkbox" class="peer sr-only">
+              <i data-lucide="check" class="w-3 h-3 text-[#2896FF] opacity-0 peer-checked:opacity-100 transition-opacity absolute"></i>
+            </div>
+            <span class="text-xs font-bold text-slate-500">Ingat saya</span>
+          </label>
         </div>
 
         <!-- Tombol Submit -->
-        <button type="submit" id="auth-submit-btn" class="w-full bg-gradient-to-b from-[#55E1FF] to-[#2896FF] text-white rounded-2xl px-4 py-3.5 font-bold mt-4 hover:opacity-90 active:scale-[0.98] transition-all shadow-[0_4px_12px_rgba(40,150,255,0.3)] flex justify-center items-center gap-2">
+        <button type="submit" id="auth-submit-btn" class="w-full bg-gradient-to-b from-[#55E1FF] to-[#2896FF] text-white rounded-2xl px-4 py-4 font-bold mt-2 hover:opacity-90 active:scale-[0.98] transition-all shadow-[0_4px_12px_rgba(40,150,255,0.3)] flex justify-center items-center gap-2">
           <span>Masuk</span>
-          <i data-lucide="arrow-right" class="w-4 h-4"></i>
         </button>
       </form>
-
-      <!-- Toggle Login/Register -->
-      <div class="mt-8 text-center relative z-10">
-        <p class="text-sm font-medium text-slate-500">
-          <span id="auth-toggle-text">Pengguna baru?</span> 
-          <button id="auth-toggle-btn" class="text-[#2896FF] font-bold hover:underline transition-all ml-1">Buat Akun</button>
-        </p>
-      </div>
     </div>
   </div>
 
   <!-- ========================================== -->
   <!-- APLIKASI UTAMA (Disembunyikan saat belum login) -->
   <!-- ========================================== -->
-  <div id="app-container" class="hidden max-w-md mx-auto md:max-w-5xl md:flex md:gap-8 pb-24 md:pb-8 pt-8 px-4 md:px-8 min-h-screen">
+  <div id="app-wrapper" class="hidden">
+    <div id="app-container" class="max-w-md mx-auto md:max-w-5xl md:flex md:gap-8 pb-24 md:pb-8 pt-8 px-4 md:px-8 min-h-screen">
 
-    <!-- Navigasi -->
-    <nav class="fixed bottom-0 left-0 w-full backdrop-blur-xl bg-white/90 flex justify-evenly items-center pt-3 px-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] z-50 md:sticky md:top-8 md:self-start md:w-64 md:flex-col md:justify-start md:gap-4 md:rounded-[2rem] md:shadow-[0_8px_30px_rgb(0,0,0,0.04)] md:h-fit md:p-6 transition-all border-t border-black/10 md:border will-change-transform">
-      <div class="hidden md:flex flex-col mb-8 w-full">
-        <div class="flex items-center gap-3 mb-1">
-          <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-[#55E1FF] to-[#2896FF] flex items-center justify-center text-white shadow-[0_4px_10px_rgba(40,150,255,0.3)]">
-            <i data-lucide="wallet" class="w-5 h-5"></i>
-          </div>
-          <h1 class="text-lg font-bold tracking-tight text-slate-800">Tracker</h1>
-        </div>
-        <p id="greeting-text-desktop" class="text-xs font-bold text-slate-400 mt-1 truncate">Halo, ...</p>
-      </div>
-      
-      <a href="#/" class="nav-link flex flex-col md:flex-row items-center justify-center md:justify-start gap-1 md:gap-4 w-40 h-[64px] md:w-full md:h-auto rounded-2xl text-gray-500 hover:bg-black/5 hover:text-gray-900 transition-all text-[11px] md:text-sm font-bold md:p-3">
-        <i data-lucide="Home" class="w-[22px] h-[22px] md:w-5 md:h-5"></i>
-        <span>Beranda</span>
-      </a>
-
-      <!-- Input sekarang jadi rute kedua (#/input) -->
-      <a href="#/input" class="nav-link flex flex-col md:flex-row items-center justify-center md:justify-start gap-1 md:gap-4 w-40 h-[64px] md:w-full md:h-auto rounded-2xl text-gray-500 hover:bg-black/5 hover:text-gray-900 transition-all text-[11px] md:text-sm font-bold md:p-3">
-        <i data-lucide="plus-circle" class="w-[22px] h-[22px] md:w-5 md:h-5"></i>
-        <span>Input</span>
-      </a>
-
-      <!-- [BARU] Tombol Logout -->
-      <div class="md:mt-auto md:w-full pt-0 md:pt-4 md:border-t border-black/5">
-        <button id="btn-logout" class="flex flex-col md:flex-row items-center justify-center md:justify-start gap-1 md:gap-4 w-20 h-[64px] md:w-full md:h-auto rounded-2xl text-red-400 hover:bg-red-50 hover:text-red-500 transition-all text-[11px] md:text-sm font-bold md:p-3">
-          <i data-lucide="log-out" class="w-[22px] h-[22px] md:w-5 md:h-5"></i>
-          <span>Keluar</span>
-        </button>
-      </div>
-    </nav>
-
-    <!-- App Content Container -->
-    <main class="flex-1 w-full" id="app-content">
-      
-      <!-- HALAMAN 1: HOME (INPUT & RIWAYAT) -->
-      <section id="page-home" class="page-section hidden animate-fade-in">
+      <!-- [BARU] Gambar Latar Belakang (Hero Header) -->
+      <div class="absolute top-0 left-0 w-full h-[40vh] sm:h-[50vh] z-0 overflow-hidden pointer-events-none select-none">
         
-        <!-- Header Brand Logo -->
-        <div class="mb-6">
-          <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-800">Input Pengeluaran</h2>
-      </div>
+        <!-- Gambar dari Unsplash (bisa Anda ganti dengan gambar lokal/lainnya) -->
+        <!-- class mix-blend-multiply & opacity-30 membuatnya menyatu dengan warna biru gradasi milik body! -->
+        <img src="src/assets/home.jpg" alt="App Background" class="w-full h-full object-cover opacity-10 mix-blend-multiply">
         
-        <!-- Form Card -->
-        <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] mb-8 border border-black/5">
-          <form id="expense-form" class="space-y-3 sm:space-y-4">
-            <div>
-              <input type="text" id="exp-name" required placeholder="Nama Pengeluaran" class="w-full bg-gray-100 rounded-2xl px-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2896FF] transition-shadow placeholder-gray-400 font-medium text-sm sm:text-base">
-            </div>
-            <div class="flex gap-3 sm:gap-4 w-full overflow-hidden">
-              
-              <!-- KATEGORI -->
-              <!-- [BARU] Gunakan flex-1 dan min-w-0 -->
-              <div class="relative flex-1 min-w-0">
-                <select id="exp-category" required class="w-full bg-gray-100 rounded-2xl pl-4 pr-10 py-3.5 outline-none focus:ring-2 focus:ring-transparent transition-shadow font-medium text-sm sm:text-base text-gray-700 appearance-none cursor-pointer">
-                  <option value="" disabled selected>Kategori</option>
-                  <option value="Makanan">Makanan</option>
-                  <option value="Transportasi">Transportasi</option>
-                  <option value="Hiburan">Hiburan</option>
-                  <option value="Tagihan">Tagihan</option>
-                  <option value="Lainnya">Lainnya</option>
-                </select>
-                <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
-                  <i data-lucide="chevron-down" class="w-5 h-5 text-gray-400"></i>
-                </div>
-              </div>
+        <!-- Overlay Transparan-ke-AbuAbu agar bagian bawah gambar memudar mulus tanpa garis potong -->
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#F5F5F7]"></div>
+      </div>
 
-              <!-- TANGGAL -->
-              <!-- [BARU] Gunakan flex-1 dan min-w-0 -->
-              <div class="relative flex-1 min-w-0">
-                <input type="date" id="exp-date" required onclick="this.showPicker()" class="w-full min-w-0 appearance-none bg-gray-100 rounded-2xl pl-3 sm:pl-4 pr-10 py-3.5 outline-none focus:ring-2 focus:ring-transparent transition-shadow font-medium text-sm sm:text-base tracking-tighter sm:tracking-normal text-gray-700 cursor-pointer">
-                <div class="absolute inset-y-0 right-0 pr-3 sm:pr-4 flex items-center pointer-events-none">
-                  <i data-lucide="calendar" class="w-5 h-5 text-gray-400"></i>
-                </div>
-              </div>
+      <!-- [UBAH] Tambahkan 'relative z-10' di app-container agar konten tidak tertimpa gambar -->
+      <div id="app-container" class="relative z-10 max-w-md mx-auto md:max-w-5xl md:flex md:gap-8 pb-24 md:pb-8 pt-8 px-4 md:px-8 min-h-screen">      
 
+      <!-- Navigasi -->
+      <nav class="fixed bottom-0 left-0 w-full backdrop-blur-xl bg-white/90 flex justify-evenly items-center pt-3 px-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] z-50 md:sticky md:top-8 md:self-start md:w-64 md:flex-col md:justify-start md:gap-4 md:rounded-[2rem] md:shadow-[0_8px_30px_rgb(0,0,0,0.04)] md:h-fit md:p-6 transition-all border-t border-black/10 md:border will-change-transform">
+        <div class="hidden md:flex flex-col mb-8 w-full">
+          <div class="flex items-center gap-3 mb-1">
+            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-[#55E1FF] to-[#2896FF] flex items-center justify-center text-white shadow-[0_4px_10px_rgba(40,150,255,0.3)]">
+              <i data-lucide="wallet" class="w-5 h-5"></i>
             </div>
-            <div>
-              <div class="relative">
-                <span class="absolute left-4 top-3.5 text-gray-500 font-bold text-sm sm:text-base">Rp</span>
-                <input type="text" inputmode="numeric" id="exp-amount" required placeholder="0" class="w-full bg-gray-100 rounded-2xl pl-12 pr-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2896FF] transition-shadow font-bold text-sm sm:text-base">
-              </div>
-            </div>
-            <button type="submit" id="btn-submit-expense" class="w-full bg-gradient-to-b from-[#55E1FF] to-[#2896FF] text-white rounded-2xl px-4 py-3.5 font-semibold mt-2 hover:opacity-90 active:scale-[0.98] transition-all shadow-[0_4px_12px_rgba(40,150,255,0.3)]">
-              Simpan Pengeluaran
-            </button>
-          </form>
-        </div>
-
-        <!-- Riwayat Card -->
-        <h3 class="text-xl font-bold tracking-tight mb-4">Riwayat Terbaru</h3>
-        <div class="flex overflow-x-auto gap-2 sm:gap-3 mb-4 pb-2 hide-scrollbar">
-          <button class="filter-bubble-home px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_4px_12px_rgba(40,150,255,0.3)] bg-gradient-to-b from-[#55E1FF] to-[#2896FF] text-white" data-category="Semua">Semua</button>
-          <button class="filter-bubble-home px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Makanan">Makanan</button>
-          <button class="filter-bubble-home px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Transportasi">Transportasi</button>
-          <button class="filter-bubble-home px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Hiburan">Hiburan</button>
-          <button class="filter-bubble-home px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Tagihan">Tagihan</button>
-          <button class="filter-bubble-home px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Lainnya">Lainnya</button>
-        </div>
-        <div id="expense-list" class="space-y-3">
-          <!-- Item render by JS -->
-        </div>
-      </section>
-
-      <!-- HALAMAN 2: ANALYTICS -->
-      <section id="page-analytics" class="page-section hidden animate-fade-in">
-
-        <!-- [BARU] Header Brand Logo, Sapaan & Filter Tanggal -->
-        <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
-          
-          <!-- Logo & Sapaan (Hanya muncul di Mobile, karena di Desktop sudah ada di Sidebar) -->
-          <div class="flex items-center gap-3 md:hidden">
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#55E1FF] to-[#2896FF] flex items-center justify-center text-white shadow-[0_4px_10px_rgba(40,150,255,0.3)]">
-              <i data-lucide="wallet" class="w-6 h-6"></i>
-            </div>
-            <div>
-              <p class="text-[10px] font-bold text-gray-800 uppercase tracking-widest mb-0.5">PengeluaranKu</p>
-              <h2 id="greeting-text-mobile" class="text-2xl font-bold tracking-tight text-slate-800 leading-none">Halo, ...</h2>
-            </div>
+            <h1 class="text-lg font-bold tracking-tight text-slate-800">Tracker</h1>
           </div>
-
-          <!-- Judul untuk Desktop -->
-          <h2 class="hidden md:block text-3xl font-bold tracking-tight text-slate-800">Beranda</h2>
-
-          <div class="flex items-center justify-between w-full md:w-auto gap-3">
-            
-            <!-- Tanggal (Di Kiri) -->
-            <input type="month" id="filter-month" class="bg-gray-100/80 rounded-xl px-3 py-2 sm:px-4 outline-none focus:ring-2 focus:ring-[#2896FF] text-sm font-bold text-gray-700 cursor-pointer shadow-sm border border-transparent hover:bg-gray-200 transition-colors">
-            
-            <!-- Notifikasi (Di Kanan) -->
-            <button class="relative p-2.5 bg-gray-100/80 rounded-xl shadow-sm border border-black/5 text-gray-500 hover:text-[#2896FF] transition-colors active:scale-95 cursor-pointer">
-              <i data-lucide="bell" class="w-5 h-5"></i>
-              <!-- Titik merah indikator notifikasi -->
-            </button>
-
-          </div>
+          <p id="greeting-text-desktop" class="text-xs font-bold text-slate-400 mt-1 truncate">Halo, ...</p>
         </div>
-
-        <div class="flex flex-col items-center justify-center mb-12 mt-12 text-center">
-          <span class="text-slate-500 text-sm font-bold mb-1">Total Pengeluaran</span>
-          <!-- Angka raksasa (text-4xl / text-5xl) -->
-          <span class="text-4xl sm:text-5xl font-bold tracking-tight text-slate-800 mb-3" id="total-month">Rp 0</span>
-          
-          <!-- Teks Tren Perbandingan -->
-          <div id="trend-comparison" class="flex items-center justify-center gap-1.5 text-sm font-bold text-slate-500">
-            <i data-lucide="minus" class="w-4 h-4"></i>
-            <span>Menghitung...</span>
-          </div>
-        </div>
-
-        <a href="#/input" class="flex justify-center items-center gap-2 w-full bg-gradient-to-b from-[#55E1FF] to-[#2896FF] text-white rounded-[1.25rem] px-4 py-4 mb-6 font-semibold shadow-[0_8px_30px_rgb(0,0,0,0.04)]  transition-all cursor-pointer">
-          <i data-lucide="plus-circle" class="w-5 h-5"></i>
-          <span>Mulai Catat Pengeluaran</span>
+        
+        <a href="#/" class="nav-link flex flex-col md:flex-row items-center justify-center md:justify-start gap-1 md:gap-4 w-40 h-[64px] md:w-full md:h-auto rounded-2xl text-gray-500 hover:bg-black/5 hover:text-gray-900 transition-all text-[11px] md:text-sm font-bold md:p-3">
+          <i data-lucide="Home" class="w-[22px] h-[22px] md:w-5 md:h-5"></i>
+          <span>Beranda</span>
         </a>
 
-        <!-- Filter Kategori -->
-        <div class="flex overflow-x-auto gap-2 sm:gap-3 mb-6 pb-2 hide-scrollbar">
-          <button class="filter-bubble px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_4px_12px_rgba(40,150,255,0.3)] bg-gradient-to-b from-[#55E1FF] to-[#2896FF] text-white" data-category="Semua">Semua</button>
-          <button class="filter-bubble px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Makanan">Makanan</button>
-          <button class="filter-bubble px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Transportasi">Transportasi</button>
-          <button class="filter-bubble px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Hiburan">Hiburan</button>
-          <button class="filter-bubble px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Tagihan">Tagihan</button>
-          <button class="filter-bubble px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Lainnya">Lainnya</button>
+        <!-- Input sekarang jadi rute kedua (#/input) -->
+        <a href="#/input" class="nav-link flex flex-col md:flex-row items-center justify-center md:justify-start gap-1 md:gap-4 w-40 h-[64px] md:w-full md:h-auto rounded-2xl text-gray-500 hover:bg-black/5 hover:text-gray-900 transition-all text-[11px] md:text-sm font-bold md:p-3">
+          <i data-lucide="plus-circle" class="w-[22px] h-[22px] md:w-5 md:h-5"></i>
+          <span>Input</span>
+        </a>
+
+        <!-- [BARU] Tombol Logout -->
+        <div class="md:mt-auto md:w-full pt-0 md:pt-4 md:border-t border-black/5">
+          <button id="btn-logout" class="flex flex-col md:flex-row items-center justify-center md:justify-start gap-1 md:gap-4 w-20 h-[64px] md:w-full md:h-auto rounded-2xl text-red-400 hover:bg-red-50 hover:text-red-500 transition-all text-[11px] md:text-sm font-bold md:p-3">
+            <i data-lucide="log-out" class="w-[22px] h-[22px] md:w-5 md:h-5"></i>
+            <span>Keluar</span>
+          </button>
         </div>
+      </nav>
 
-        <!--[BARU] Rata-rata Harian Card -->
-        <div class="bg-white rounded-3xl p-4 sm:p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-black/5 mb-6 flex items-center gap-3 sm:gap-4 transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)]">
+      <!-- App Content Container -->
+      <main class="flex-1 w-full" id="app-content">
+        
+        <!-- HALAMAN 1: HOME (INPUT & RIWAYAT) -->
+        <section id="page-home" class="page-section hidden animate-fade-in">
           
-          <!-- Icon Box (Tinted Blue) -->
-          <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-[#55E1FF]/20 to-[#2896FF]/20 flex items-center justify-center flex-shrink-0 border border-[#2896FF]/10">
-            <i data-lucide="calculator" class="w-6 h-6 sm:w-7 sm:h-7 text-[#2896FF]"></i>
-          </div>
-          
-          <!-- Teks Info (Tengah) -->
-          <div class="flex-1 min-w-0">
-            <h3 class="text-slate-800 text-sm sm:text-base font-bold truncate">Rata-rata Harian</h3>
-            <p class="text-slate-400 text-[11px] sm:text-xs font-medium mt-0.5 truncate">Dari <span id="days-filled" class="text-[#2896FF] font-bold">0</span> hari aktif</p>
-          </div>
-
-          <!-- Nominal (Kanan) -->
-          <div class="text-right flex-shrink-0 pl-2">
-            <span class="text-xl sm:text-2xl font-bold tracking-tight text-slate-800" id="daily-avg">Rp 0</span>
-          </div>
-          
+          <!-- Header Brand Logo -->
+          <div class="mb-6">
+            <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-800">Yuk Catat Pengeluaran ✍️</h2>
         </div>
+          
+          <!-- Form Card -->
+          <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] mb-8 border border-black/5">
+            <form id="expense-form" class="space-y-3 sm:space-y-4">
+              <div>
+                <input type="text" id="exp-name" required placeholder="Nama Pengeluaran" class="w-full bg-gray-100 rounded-2xl px-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2896FF] transition-shadow placeholder-gray-400 font-medium text-sm sm:text-base">
+              </div>
+              <div class="flex gap-3 sm:gap-4 w-full overflow-hidden">
+                
+                <!-- KATEGORI -->
+                <!-- [BARU] Gunakan flex-1 dan min-w-0 -->
+                <div class="relative flex-1 min-w-0">
+                  <select id="exp-category" required class="w-full bg-gray-100 rounded-2xl pl-4 pr-10 py-3.5 outline-none focus:ring-2 focus:ring-transparent transition-shadow font-medium text-sm sm:text-base text-gray-700 appearance-none cursor-pointer">
+                    <option value="" disabled selected>Kategori</option>
+                    <option value="Makanan">Makanan</option>
+                    <option value="Transportasi">Transportasi</option>
+                    <option value="Hiburan">Hiburan</option>
+                    <option value="Tagihan">Tagihan</option>
+                    <option value="Lainnya">Lainnya</option>
+                  </select>
+                  <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                    <i data-lucide="chevron-down" class="w-5 h-5 text-gray-400"></i>
+                  </div>
+                </div>
 
-        <!-- Charts Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <div class="bg-white rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-black/5">
-            <h3 class="font-bold tracking-tight mb-4">Tren 7 Hari Terakhir</h3>
-            <div class="relative h-48 w-full">
-              <canvas id="trendChart"></canvas>
-            </div>
-          </div>
-          <div class="bg-white rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-black/5">
-            <h3 class="font-bold tracking-tight mb-4">Berdasarkan Kategori</h3>
-            <div class="relative h-48 w-full">
-              <canvas id="categoryChart"></canvas>
-            </div>
-          </div>
-        </div>
+                <!-- TANGGAL -->
+                <!-- [BARU] Gunakan flex-1 dan min-w-0 -->
+                <div class="relative flex-1 min-w-0">
+                  <input type="date" id="exp-date" required onclick="this.showPicker()" class="w-full min-w-0 appearance-none bg-gray-100 rounded-2xl pl-3 sm:pl-4 pr-10 py-3.5 outline-none focus:ring-2 focus:ring-transparent transition-shadow font-medium text-sm sm:text-base tracking-tighter sm:tracking-normal text-gray-700 cursor-pointer">
+                  <div class="absolute inset-y-0 right-0 pr-3 sm:pr-4 flex items-center pointer-events-none">
+                    <i data-lucide="calendar" class="w-5 h-5 text-gray-400"></i>
+                  </div>
+                </div>
 
-        <!-- FULL WIDTH CHART -->
-        <div class="bg-white rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] mb-8 border border-black/5">
+              </div>
+              <div>
+                <div class="relative">
+                  <span class="absolute left-4 top-3.5 text-gray-500 font-bold text-sm sm:text-base">Rp</span>
+                  <input type="text" inputmode="numeric" id="exp-amount" required placeholder="0" class="w-full bg-gray-100 rounded-2xl pl-12 pr-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2896FF] transition-shadow font-bold text-sm sm:text-base">
+                </div>
+              </div>
+              <button type="submit" id="btn-submit-expense" class="w-full bg-gradient-to-b from-[#55E1FF] to-[#2896FF] text-white rounded-2xl px-4 py-3.5 font-semibold mt-2 hover:opacity-90 active:scale-[0.98] transition-all shadow-[0_4px_12px_rgba(40,150,255,0.3)]">
+                Simpan Pengeluaran
+              </button>
+            </form>
+          </div>
+
+          <!-- Riwayat Card -->
+          <h3 class="text-xl font-bold tracking-tight mb-4">Riwayat Terbaru</h3>
+          <div class="flex overflow-x-auto gap-2 sm:gap-3 mb-4 pb-2 hide-scrollbar">
+            <button class="filter-bubble-home px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_4px_12px_rgba(40,150,255,0.3)] bg-gradient-to-b from-[#55E1FF] to-[#2896FF] text-white" data-category="Semua">Semua</button>
+            <button class="filter-bubble-home px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Makanan">Makanan</button>
+            <button class="filter-bubble-home px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Transportasi">Transportasi</button>
+            <button class="filter-bubble-home px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Hiburan">Hiburan</button>
+            <button class="filter-bubble-home px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Tagihan">Tagihan</button>
+            <button class="filter-bubble-home px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Lainnya">Lainnya</button>
+          </div>
+          <div id="expense-list" class="space-y-3">
+            <!-- Item render by JS -->
+          </div>
+        </section>
+
+        <!-- HALAMAN 2: ANALYTICS -->
+        <section id="page-analytics" class="page-section hidden animate-fade-in">
+
+          <!-- [BARU] Header Brand Logo, Sapaan & Filter Tanggal -->
           <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
-            <h3 class="font-bold tracking-tight">Grafik Pengeluaran (<span id="daily-chart-title">Bulan Ini</span>)</h3>
-            <div class="relative inline-flex bg-gray-100/80 rounded-xl p-1 border border-black/5">
-              <div id="slider-bg" class="absolute top-1 bottom-1 left-1 w-24 bg-gradient-to-b from-[#55E1FF] to-[#2896FF] rounded-lg shadow-[0_2px_8px_rgb(0,0,0,0.08)] transition-transform duration-300 ease-in-out transform translate-x-0"></div>
-              <button id="btn-view-month" class="relative z-10 px-4 py-1.5 text-xs font-semibold text-white w-24 transition-colors cursor-pointer">Bulanan</button>
-              <button id="btn-view-day" class="relative z-10 px-4 py-1.5 text-xs font-semibold text-gray-400 w-24 transition-colors cursor-pointer">Harian</button>
+            
+            <!-- Logo & Sapaan (Hanya muncul di Mobile, karena di Desktop sudah ada di Sidebar) -->
+            <div class="flex items-center gap-3 md:hidden">
+              <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#55E1FF] to-[#2896FF] flex items-center justify-center text-white shadow-[0_4px_10px_rgba(40,150,255,0.3)]">
+                <i data-lucide="wallet" class="w-6 h-6"></i>
+              </div>
+              <div>
+                <p class="text-[10px] font-bold text-gray-800 uppercase tracking-widest mb-0.5">PengeluaranKu</p>
+                <h2 id="greeting-text-mobile" class="text-2xl font-bold tracking-tight text-slate-800 leading-none">Halo, ...</h2>
+              </div>
+            </div>
+
+            <!-- Judul untuk Desktop -->
+            <h2 class="hidden md:block text-3xl font-bold tracking-tight text-slate-800">Beranda</h2>
+
+            <div class="flex items-center justify-between w-full md:w-auto gap-3">
+              
+              <!-- Tanggal (Di Kiri) -->
+              <div class="relative">
+                <!-- [BARU] Tambahkan onclick="this.showPicker()" dan pr-9 agar teks tidak menabrak icon -->
+                <input type="month" id="filter-month" onclick="this.showPicker()" class="bg-gray-100/80 rounded-xl pl-3 sm:pl-4 pr-9 py-2 outline-none focus:ring-2 focus:ring-[#2896FF] text-sm font-bold text-gray-700 cursor-pointer shadow-sm border border-transparent hover:bg-gray-200 transition-colors appearance-none">
+                
+                <!-- Icon Lucide Calendar -->
+                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                  <i data-lucide="calendar" class="w-4 h-4 text-gray-500"></i>
+                </div>
+              </div>
+              
+              <!-- Notifikasi (Di Kanan) -->
+              <button class="relative p-2.5 bg-gray-100/80 rounded-xl shadow-sm border border-black/5 text-gray-500 hover:text-[#2896FF] transition-colors active:scale-95 cursor-pointer">
+                <i data-lucide="bell" class="w-5 h-5"></i>
+                <!-- Titik merah indikator notifikasi -->
+              </button>
+
             </div>
           </div>
-          <div class="relative h-56 w-full">
-            <canvas id="dailyChart"></canvas>
-          </div>
-        </div>
 
-      </section>
-    </main>
-  </div>
+          <div class="flex flex-col items-center justify-center mb-12 mt-12 text-center">
+            <span class="text-slate-500 text-sm font-bold mb-1">Total Pengeluaran</span>
+            <!-- Angka raksasa (text-4xl / text-5xl) -->
+            <span class="text-4xl sm:text-5xl font-bold tracking-tight text-slate-800 mb-3" id="total-month">Rp 0</span>
+            
+            <!-- Teks Tren Perbandingan -->
+            <div id="trend-comparison" class="flex items-center justify-center gap-1.5 text-sm font-bold text-slate-500">
+              <i data-lucide="minus" class="w-4 h-4"></i>
+              <span>Menghitung...</span>
+            </div>
+          </div>
+
+          <a href="#/input" class="flex justify-center items-center gap-2 w-full bg-gradient-to-b from-[#55E1FF] to-[#2896FF] text-white rounded-[1.25rem] px-4 py-4 mb-6 font-semibold shadow-[0_8px_30px_rgb(0,0,0,0.04)]  transition-all cursor-pointer">
+            <i data-lucide="plus-circle" class="w-5 h-5"></i>
+            <span>Mulai Catat Pengeluaran</span>
+          </a>
+
+          <!-- Filter Kategori -->
+          <div class="flex overflow-x-auto gap-2 sm:gap-3 mb-6 pb-2 hide-scrollbar">
+            <button class="filter-bubble px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_4px_12px_rgba(40,150,255,0.3)] bg-gradient-to-b from-[#55E1FF] to-[#2896FF] text-white" data-category="Semua">Semua</button>
+            <button class="filter-bubble px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Makanan">Makanan</button>
+            <button class="filter-bubble px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Transportasi">Transportasi</button>
+            <button class="filter-bubble px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Hiburan">Hiburan</button>
+            <button class="filter-bubble px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Tagihan">Tagihan</button>
+            <button class="filter-bubble px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Lainnya">Lainnya</button>
+          </div>
+
+          <!--[BARU] Rata-rata Harian Card -->
+          <div class="bg-white rounded-3xl p-4 sm:p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-black/5 mb-6 flex items-center gap-3 sm:gap-4 transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)]">
+            
+            <!-- Icon Box (Tinted Blue) -->
+            <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-b from-[#55E1FF] to-[#2896FF] flex items-center justify-center flex-shrink-0 shadow-[0_8px_15px_rgba(40,150,255,0.3),inset_0_2px_3px_rgba(255,255,255,0.6),inset_0_-3px_4px_rgba(0,0,0,0.2)] border border-[#55E1FF]/50">
+              <i data-lucide="calculator" class="w-6 h-6 sm:w-7 sm:h-7 text-white drop-shadow-md"></i>
+            </div>
+            
+            <!-- Teks Info (Tengah) -->
+            <div class="flex-1 min-w-0">
+              <h3 class="text-slate-800 text-sm sm:text-base font-bold truncate">Rata-rata Harian</h3>
+              <p class="text-slate-400 text-[11px] sm:text-xs font-medium mt-0.5 truncate">Dari <span id="days-filled" class="text-[#2896FF] font-bold">0</span> hari aktif</p>
+            </div>
+
+            <!-- Nominal (Kanan) -->
+            <div class="text-right flex-shrink-0 pl-2">
+              <span class="text-xl sm:text-2xl font-bold tracking-tight text-slate-800" id="daily-avg">Rp 0</span>
+            </div>
+            
+          </div>
+
+          <!-- Charts Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="bg-white rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-black/5">
+              <h3 class="font-bold tracking-tight mb-4">Tren 7 Hari Terakhir</h3>
+              <div class="relative h-48 w-full">
+                <canvas id="trendChart"></canvas>
+              </div>
+            </div>
+            <div class="bg-white rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-black/5">
+              <h3 class="font-bold tracking-tight mb-4">Berdasarkan Kategori</h3>
+              <div class="relative h-48 w-full">
+                <canvas id="categoryChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- FULL WIDTH CHART -->
+          <div class="bg-white rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] mb-8 border border-black/5">
+            <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
+              <h3 class="font-bold tracking-tight">Grafik Pengeluaran (<span id="daily-chart-title">Bulan Ini</span>)</h3>
+              <div class="relative inline-flex bg-gray-100/80 rounded-xl p-1 border border-black/5">
+                <div id="slider-bg" class="absolute top-1 bottom-1 left-1 w-24 bg-gradient-to-b from-[#55E1FF] to-[#2896FF] rounded-lg shadow-[0_2px_8px_rgb(0,0,0,0.08)] transition-transform duration-300 ease-in-out transform translate-x-0"></div>
+                <button id="btn-view-month" class="relative z-10 px-4 py-1.5 text-xs font-semibold text-white w-24 transition-colors cursor-pointer">Bulanan</button>
+                <button id="btn-view-day" class="relative z-10 px-4 py-1.5 text-xs font-semibold text-gray-400 w-24 transition-colors cursor-pointer">Harian</button>
+              </div>
+            </div>
+            <div class="relative h-56 w-full">
+              <canvas id="dailyChart"></canvas>
+            </div>
+          </div>
+
+        </section>
+      </main>
+    </div>
+
+  </div> 
 
   <script type="module" src="/src/main.js"></script>
 </body>

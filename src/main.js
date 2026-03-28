@@ -1,5 +1,5 @@
 import './style.css'
-import { createIcons, Home, PlusCircle, PieChart, Trash2, Calendar, Tags, Utensils, Car, Gamepad2, Receipt, Package, Wallet, LogOut, Mail, Lock, Eye, EyeOff, AlertCircle, ArrowRight, User, ChevronDown, TrendingDown, TrendingUp, Minus, Bell, Calculator } from 'lucide'
+import { createIcons, Home, PlusCircle, PieChart, Trash2, Calendar, Tags, Utensils, Car, Gamepad2, Receipt, Package, Wallet, LogOut, Mail, Lock, Eye, EyeOff, AlertCircle, ArrowRight, User, ChevronDown, TrendingDown, TrendingUp, Minus, Bell, Calculator, Check } from 'lucide'
 import Chart from 'chart.js/auto'
 import { createClient } from '@supabase/supabase-js'
 
@@ -262,14 +262,44 @@ const updateAnalytics = async (forceFetch = false) => {
   }
 
   document.getElementById('daily-chart-title').innerText = chartTitle + (catFilter === 'Semua' ? '' : ` - ${catFilter}`);
-  renderCharts(categoryData, trendData, trendLabels, dailyData, dailyLabels);
+  renderCharts(categoryData, trendData, trendLabels, dailyData, dailyLabels, uniqueDays);
   
   if (window.location.hash !== '#/analytics') renderExpenseList(false); // Update list beranda juga
 };
 
-const renderCharts = (categoryData, trendData, trendLabels, dailyData, dailyLabels) => {
+const renderCharts = (categoryData, trendData, trendLabels, dailyData, dailyLabels, uniqueDays) => {
+  
   const ctxCat = document.getElementById('categoryChart').getContext('2d');
   if (categoryChartInstance) categoryChartInstance.destroy();
+
+  // --- [BARU] CUSTOM PLUGIN UNTUK TEKS DI TENGAH LINGKARAN ---
+  const centerTextPlugin = {
+    id: 'centerText',
+    beforeDraw: function(chart) {
+      const ctx = chart.ctx;
+      // Dapatkan titik tengah dari area grafik (mengabaikan legend di sebelah kanan)
+      const { top, left, bottom, right } = chart.chartArea;
+      const centerX = (left + right) / 2;
+      const centerY = (top + bottom) / 2;
+
+      ctx.save();
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      
+      // Baris 1: Tulisan "Total" (Kecil, Abu-abu)
+      ctx.font = `bold 11px "Plus Jakarta Sans", sans-serif`;
+      ctx.fillStyle = '#9CA3AF'; // text-gray-400
+      ctx.fillText('Total', centerX, centerY - 10);
+      
+      // Baris 2: Tulisan "X Hari" (Besar, Gelap)
+      ctx.font = `bold 16px "Plus Jakarta Sans", sans-serif`;
+      ctx.fillStyle = '#1E293B'; // text-slate-800
+      ctx.fillText(`${uniqueDays || 0} Hari`, centerX, centerY + 10);
+      
+      ctx.restore();
+    }
+  };
+
   categoryChartInstance = new Chart(ctxCat, {
     type: 'doughnut',
     data: {
@@ -282,8 +312,13 @@ const renderCharts = (categoryData, trendData, trendLabels, dailyData, dailyLabe
     },
     options: {
       responsive: true, maintainAspectRatio: false, cutout: '75%',
-      plugins: { legend: { position: 'right', labels: { usePointStyle: true, boxWidth: 10, boxPadding: 10, padding: 15, font: { weight: 'bold' } } }, tooltip: { enabled: Object.keys(categoryData).length > 0 } }
-    }
+      plugins: { 
+        legend: { position: 'right', labels: { usePointStyle: true, boxWidth: 10, boxPadding: 10, padding: 15, font: { weight: 'bold' } } }, 
+        tooltip: { enabled: Object.keys(categoryData).length > 0 } 
+      }
+    },
+    // [BARU] Daftarkan plugin teks tengah ke dalam chart ini
+    plugins: [centerTextPlugin]
   });
 
 // --------------------------------------------------------
@@ -406,30 +441,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- SUPABASE AUTH STATE LISTENER ---
   const authContainer = document.getElementById('auth-container');
-  const appContainer = document.getElementById('app-container');
+  
+  // [UBAH] Targetkan 'app-wrapper' yang baru kita buat, bukan 'app-container'
+  const appWrapper = document.getElementById('app-wrapper'); 
   
   supabase.auth.onAuthStateChange((event, session) => {
     if (session) {
       // User is logged in
       authContainer.classList.add('hidden');
-      appContainer.classList.remove('hidden');
+      appWrapper.classList.remove('hidden'); // [UBAH]
       
-      // Mengambil Nama (full_name) dari metadata rahasia Supabase
-      // Jika nama kosong (misal user lama), maka fallback ke kata 'Pengguna'
       const userName = session.user.user_metadata?.full_name || 'Pengguna';
-      
-      // Tampilkan sapaan ke layar Mobile dan Desktop
       const greetingMobile = document.getElementById('greeting-text-mobile');
       const greetingDesktop = document.getElementById('greeting-text-desktop');
       
       if(greetingMobile) greetingMobile.innerText = `Halo, ${userName} 👋`;
       if(greetingDesktop) greetingDesktop.innerText = `Halo, ${userName} 👋`;
 
-      updateAnalytics(true); // Mulai ambil data dari cloud
+      updateAnalytics(true); 
     } else {
       // User is logged out
       authContainer.classList.remove('hidden');
-      appContainer.classList.add('hidden');
+      appWrapper.classList.add('hidden'); // [UBAH]
       
       // Kosongkan data lokal demi keamanan
       cachedExpenses =[]; 
@@ -437,15 +470,12 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // --- LOGIN / REGISTER LOGIC ---
-  createIcons({ icons: { PlusCircle, PieChart, Trash2, Calendar, Tags, Utensils, Car, Gamepad2, Receipt, Package, Wallet, LogOut, Mail, Lock, Eye, EyeOff, AlertCircle, ArrowRight, User, ChevronDown, Bell, Calculator } });
+// --- LOGIN / REGISTER LOGIC ---
+  createIcons({ icons: { PlusCircle, PieChart, Home, Trash2, Calendar, Tags, Utensils, Car, Gamepad2, Receipt, Package, Wallet, LogOut, Mail, Lock, Eye, EyeOff, AlertCircle, ArrowRight, User, ChevronDown, Bell, Calculator, Check } });
 
   let isLoginMode = true;
-  const authTitle = document.getElementById('auth-title');
-  const authSubtitle = document.getElementById('auth-subtitle');
-  const authToggleBtn = document.getElementById('auth-toggle-btn');
-  const authToggleText = document.getElementById('auth-toggle-text');
   const authSubmitBtn = document.getElementById('auth-submit-btn');
-  const forgotPwContainer = document.getElementById('forgot-password-container');
+  const forgotPwLink = document.getElementById('forgot-password-link');
   const authErrorBox = document.getElementById('auth-error-box');
   const authErrorText = document.getElementById('auth-error-text');
   
@@ -453,44 +483,68 @@ document.addEventListener('DOMContentLoaded', () => {
   const authNameContainer = document.getElementById('auth-name-container');
   const authNameInput = document.getElementById('auth-name');
 
+  // Element Toggle Baru
+  const btnModeLogin = document.getElementById('btn-mode-login');
+  const btnModeRegister = document.getElementById('btn-mode-register');
+  const authSliderBg = document.getElementById('auth-slider-bg');
+
   const showError = (message) => {
     authErrorText.innerText = message;
     authErrorBox.classList.remove('hidden');
   };
 
-  // Logika Toggle Login/Register
-  authToggleBtn.addEventListener('click', (e) => {
+  // Logika Klik Tombol "Masuk" (Toggle Kiri)
+  btnModeLogin.addEventListener('click', (e) => {
     e.preventDefault();
-    isLoginMode = !isLoginMode;
+    if (isLoginMode) return; // Jika sudah di mode login, abaikan
+    isLoginMode = true;
     authErrorBox.classList.add('hidden');
     
-    if (isLoginMode) {
-      authTitle.innerText = "Selamat Datang";
-      authSubtitle.innerText = "Silakan masuk untuk mengelola keuanganmu.";
-      authSubmitBtn.innerHTML = '<span>Masuk</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>';
-      authToggleText.innerText = "Pengguna baru?";
-      authToggleBtn.innerText = "Buat Akun";
-      forgotPwContainer.classList.remove('hidden'); 
-      
-      // Sembunyikan input nama saat Login
-      authNameContainer.classList.add('hidden');
-      authNameInput.removeAttribute('required');
-    } else {
-      authTitle.innerText = "Buat Akun";
-      authSubtitle.innerText = "Daftar sekarang untuk melacak pengeluaran.";
-      authSubmitBtn.innerHTML = '<span>Daftar Sekarang</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>';
-      authToggleText.innerText = "Sudah punya akun?";
-      authToggleBtn.innerText = "Masuk";
-      forgotPwContainer.classList.add('hidden'); 
-      
-      // Munculkan input nama saat Daftar
-      authNameContainer.classList.remove('hidden');
-      authNameInput.setAttribute('required', 'true');
-    }
-    createIcons({ icons: { ArrowRight } });
+    // Animasi Slider
+    authSliderBg.classList.remove('translate-x-full');
+    btnModeLogin.classList.replace('text-gray-400', 'text-slate-900');
+    btnModeRegister.classList.replace('text-slate-900', 'text-gray-400');
+    
+    // Ubah UI Form
+    authSubmitBtn.innerHTML = '<span>Masuk</span>';
+    forgotPwLink.classList.remove('hidden'); 
+    authNameContainer.classList.remove('flex');
+    authNameContainer.classList.add('hidden');
+    authNameInput.removeAttribute('required');
   });
 
-  // (Logika Toggle Mata Password biarkan tetap ada)
+  // Logika Klik Tombol "Daftar" (Toggle Kanan)
+  btnModeRegister.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (!isLoginMode) return; // Jika sudah di mode daftar, abaikan
+    isLoginMode = false;
+    authErrorBox.classList.add('hidden');
+    
+    // Animasi Slider
+    authSliderBg.classList.add('translate-x-full');
+    btnModeRegister.classList.replace('text-gray-400', 'text-slate-900');
+    btnModeLogin.classList.replace('text-slate-900', 'text-gray-400');
+    
+    // Ubah UI Form
+    authSubmitBtn.innerHTML = '<span>Daftar Sekarang</span>';
+    forgotPwLink.classList.add('hidden'); 
+    authNameContainer.classList.remove('hidden');
+    authNameContainer.classList.add('flex');
+    authNameInput.setAttribute('required', 'true');
+  });
+
+  // Logika Intip Password (Show/Hide)
+  const passwordInput = document.getElementById('auth-password');
+  const togglePasswordBtn = document.getElementById('toggle-password');
+  
+  togglePasswordBtn.addEventListener('click', () => {
+    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+    passwordInput.setAttribute('type', type);
+    togglePasswordBtn.innerHTML = type === 'password' 
+      ? '<i data-lucide="eye" class="w-5 h-5"></i>' 
+      : '<i data-lucide="eye-off" class="w-5 h-5 text-[#2896FF]"></i>';
+    createIcons({ icons: { Eye, EyeOff } });
+  });
 
   // Logika Submit Autentikasi
   document.getElementById('auth-form').addEventListener('submit', async (e) => {
@@ -499,7 +553,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const email = document.getElementById('auth-email').value;
     const password = document.getElementById('auth-password').value;
-    const fullName = authNameInput.value; // Ambil nilai nama
+    const fullName = authNameInput.value; 
     
     if(password.length < 6) {
       showError("Kata sandi minimal 6 karakter.");
@@ -510,33 +564,24 @@ document.addEventListener('DOMContentLoaded', () => {
     authSubmitBtn.disabled = true;
     
     if (isLoginMode) {
-      // PROSES LOGIN
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) showError(error.message === 'Invalid login credentials' ? 'Email atau kata sandi salah.' : error.message);
     } else {
-      // PROSES DAFTAR (Menyelipkan metadata nama)
       const { error } = await supabase.auth.signUp({ 
-        email, 
-        password,
-        options: {
-          data: {
-            full_name: fullName // <-- Di sini letak keajaibannya!
-          }
-        }
+        email, password, options: { data: { full_name: fullName } }
       });
       
       if (error) {
         showError(error.message === 'User already registered' ? 'Email ini sudah terdaftar.' : error.message);
       } else {
         alert("Berhasil mendaftar! Silakan masuk dengan akun baru Anda.");
-        authToggleBtn.click(); 
+        btnModeLogin.click(); // Otomatis geser kembali ke mode Login
         document.getElementById('auth-password').value = ''; 
       }
     }
     
     authSubmitBtn.disabled = false;
-    authSubmitBtn.innerHTML = isLoginMode ? '<span>Masuk</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>' : '<span>Daftar Sekarang</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>';
-    createIcons({ icons: { ArrowRight } });
+    authSubmitBtn.innerHTML = isLoginMode ? '<span>Masuk</span>' : '<span>Daftar Sekarang</span>';
   });
 
   document.getElementById('btn-logout').addEventListener('click', async () => {
