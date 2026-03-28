@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>PengeluaranKu</title>
 </head>
-<body class="bg-gradient-to-b from-[#9ccfff] to-[#F5F5F7] to-40%  min-h-screen bg-fixed bg-no-repeat text-gray-900 antialiased selection:bg-[#2896FF] selection:text-white">
+<body class="bg-gradient-to-b from-[#9ccfff] to-[#F5F5F7]/100 to-40%  min-h-screen bg-fixed bg-no-repeat text-gray-900 antialiased selection:bg-[#2896FF] selection:text-white">
 
   <!-- ========================================== -->
   <!-- HALAMAN AUTENTIKASI (LOGIN / REGISTER)     -->
@@ -119,19 +119,21 @@
   <!-- ========================================== -->
   <!-- APLIKASI UTAMA (Disembunyikan saat belum login) -->
   <!-- ========================================== -->
-  <div id="app-wrapper" class="hidden">
+  <div id="app-wrapper" class="hidden relative">
     <div id="app-container" class="max-w-md mx-auto md:max-w-5xl md:flex md:gap-8 pb-24 md:pb-8 pt-8 px-4 md:px-8 min-h-screen">
 
-      <!-- [BARU] Gambar Latar Belakang (Hero Header) -->
-      <div class="absolute top-0 left-0 w-full h-[40vh] sm:h-[50vh] z-0 overflow-hidden pointer-events-none select-none">
+      <div class="absolute top-0 left-0 w-full h-[45vh] sm:h-[50vh] z-0 pointer-events-none select-none"
+          style="-webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%); mask-image: linear-gradient(to bottom, black 50%, transparent 100%);">
         
-        <!-- Gambar dari Unsplash (bisa Anda ganti dengan gambar lokal/lainnya) -->
-        <!-- class mix-blend-multiply & opacity-30 membuatnya menyatu dengan warna biru gradasi milik body! -->
-        <img src="src/assets/home.jpg" alt="App Background" class="w-full h-full object-cover opacity-10 mix-blend-multiply">
-        
-        <!-- Overlay Transparan-ke-AbuAbu agar bagian bawah gambar memudar mulus tanpa garis potong -->
-        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#F5F5F7]"></div>
+        <!-- Letakkan Gradasi Biru dan Gambar di dalam sini -->
+        <div class="w-full h-full bg-gradient-to-br from-[#76b4ff]/50 to-[#2896FF]/20">
+          <img src="src/assets/home.jpg" alt="App Background" class="w-full h-full object-cover opacity-15 mix-blend-multiply">
+        </div>
+
+        <!-- CATATAN: Div overlay gradient putih/abu-abu (yang dari bawah) sudah DIHAPUS karena digantikan oleh mask-image di atas -->
+
       </div>
+
 
       <!-- [UBAH] Tambahkan 'relative z-10' di app-container agar konten tidak tertimpa gambar -->
       <div id="app-container" class="relative z-10 max-w-md mx-auto md:max-w-5xl md:flex md:gap-8 pb-24 md:pb-8 pt-8 px-4 md:px-8 min-h-screen">      
