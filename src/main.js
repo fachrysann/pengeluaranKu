@@ -413,7 +413,14 @@ const updateAnalytics = async (forceFetch = false) => {
 
   renderCharts(categoryData, trendData, trendLabels, dailyData, dailyLabels, uniqueDays);
   
-  if (window.location.hash !== '#/analytics') renderExpenseList(false); // Update list beranda juga
+  // --- [BARU] Update status panah setelah chart selesai digambar ---
+  if (window.updateChartNavButtons) {
+    // Beri jeda 100ms agar browser selesai menggambar animasi Chart.js terlebih dahulu
+    setTimeout(() => window.updateChartNavButtons(), 100);
+  }
+  // -----------------------------------------------------------------
+  
+  if (window.location.hash !== '#/analytics') renderExpenseList(false);
 };
 
 const renderCharts = (categoryData, trendData, trendLabels, dailyData, dailyLabels, uniqueDays) => {
@@ -710,8 +717,50 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // --- [BARU] LOGIKA NAVIGASI CHART MOBILE ---
+  const chartScrollContainer = document.getElementById('charts-scroll-container');
+  const btnChartPrev = document.getElementById('btn-chart-prev');
+  const btnChartNext = document.getElementById('btn-chart-next');
+
+  // Jadikan fungsi global agar bisa dipanggil setelah chart selesai di-render
+  window.updateChartNavButtons = () => {
+    if (!chartScrollContainer || !btnChartPrev || !btnChartNext) return;
+    
+    // Jika elemen sedang disembunyikan (display: none), ukurannya 0. Abaikan pengecekan.
+    if (chartScrollContainer.scrollWidth === 0) return;
+
+    // Cek mentok kiri
+    if (chartScrollContainer.scrollLeft <= 0) {
+      btnChartPrev.disabled = true;
+    } else {
+      btnChartPrev.disabled = false;
+    }
+
+    // Cek mentok kanan (Toleransi 2px untuk pembulatan desimal layar HP)
+    if (Math.ceil(chartScrollContainer.scrollLeft + chartScrollContainer.clientWidth) >= chartScrollContainer.scrollWidth - 2) {
+      btnChartNext.disabled = true;
+    } else {
+      btnChartNext.disabled = false;
+    }
+  };
+
+  if (chartScrollContainer && btnChartPrev && btnChartNext) {
+    // Cek status tombol setiap kali user menggeser chart
+    chartScrollContainer.addEventListener('scroll', window.updateChartNavButtons);
+
+    btnChartPrev.addEventListener('click', () => {
+      chartScrollContainer.scrollBy({ left: -chartScrollContainer.clientWidth, behavior: 'smooth' });
+    });
+
+    btnChartNext.addEventListener('click', () => {
+      chartScrollContainer.scrollBy({ left: chartScrollContainer.clientWidth, behavior: 'smooth' });
+    });
+  }
+  // -------------------------------------------
+  // -------------------------------------------
+
+
   // --- LOGIN / REGISTER LOGIC ---
-// --- LOGIN / REGISTER LOGIC ---
   createIcons({ icons: { PlusCircle, PieChart, Home, Trash2, Calendar, Tags, Utensils, Car, Gamepad2, Receipt, Package, Wallet, LogOut, Mail, Lock, Eye, EyeOff, AlertCircle, ArrowRight, User, ChevronDown, Bell, Calculator, Check } });
 
   let isLoginMode = true;
