@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>PengeluaranKu</title>
 </head>
-<body class="bg-[#F5F5F7] text-gray-900 antialiased selection:bg-[#2896FF] selection:text-white">
+<body class="bg-gradient-to-b from-[#9ccfff] to-[#F5F5F7] to-40%  min-h-screen bg-fixed bg-no-repeat text-gray-900 antialiased selection:bg-[#2896FF] selection:text-white">
 
   <!-- ========================================== -->
   <!-- HALAMAN AUTENTIKASI (LOGIN / REGISTER)       -->
@@ -106,13 +106,14 @@
       </div>
       
       <a href="#/" class="nav-link flex flex-col md:flex-row items-center justify-center md:justify-start gap-1 md:gap-4 w-40 h-[64px] md:w-full md:h-auto rounded-2xl text-gray-500 hover:bg-black/5 hover:text-gray-900 transition-all text-[11px] md:text-sm font-bold md:p-3">
+        <i data-lucide="Home" class="w-[22px] h-[22px] md:w-5 md:h-5"></i>
+        <span>Beranda</span>
+      </a>
+
+      <!-- Input sekarang jadi rute kedua (#/input) -->
+      <a href="#/input" class="nav-link flex flex-col md:flex-row items-center justify-center md:justify-start gap-1 md:gap-4 w-40 h-[64px] md:w-full md:h-auto rounded-2xl text-gray-500 hover:bg-black/5 hover:text-gray-900 transition-all text-[11px] md:text-sm font-bold md:p-3">
         <i data-lucide="plus-circle" class="w-[22px] h-[22px] md:w-5 md:h-5"></i>
         <span>Input</span>
-      </a>
-      
-      <a href="#/analytics" class="nav-link flex flex-col md:flex-row items-center justify-center md:justify-start gap-1 md:gap-4 w-40 h-[64px] md:w-full md:h-auto rounded-2xl text-gray-500 hover:bg-black/5 hover:text-gray-900 transition-all text-[11px] md:text-sm font-bold md:p-3">
-        <i data-lucide="pie-chart" class="w-[22px] h-[22px] md:w-5 md:h-5"></i>
-        <span>Analytics</span>
       </a>
 
       <!-- [BARU] Tombol Logout -->
@@ -131,15 +132,9 @@
       <section id="page-home" class="page-section hidden animate-fade-in">
         
         <!-- Header Brand Logo -->
-        <div class="flex items-center gap-3 mb-6 md:hidden">
-          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#55E1FF] to-[#2896FF] flex items-center justify-center text-white shadow-[0_4px_10px_rgba(40,150,255,0.3)]">
-            <i data-lucide="wallet" class="w-6 h-6"></i>
-          </div>
-          <div>
-            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">PengeluaranKu</p>
-            <h2 id="greeting-text-mobile" class="text-2xl font-bold tracking-tight text-slate-800 leading-none">Halo, ...</h2>
-          </div>
-        </div>
+        <div class="mb-6">
+          <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-800">Input Pengeluaran</h2>
+      </div>
         
         <!-- Form Card -->
         <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] mb-8 border border-black/5">
@@ -152,7 +147,7 @@
               <!-- KATEGORI -->
               <!-- [BARU] Gunakan flex-1 dan min-w-0 -->
               <div class="relative flex-1 min-w-0">
-                <select id="exp-category" required class="w-full bg-gray-100 rounded-2xl pl-4 pr-10 py-3.5 outline-none focus:ring-2 focus:ring-[#2896FF] transition-shadow font-medium text-sm sm:text-base text-gray-700 appearance-none cursor-pointer">
+                <select id="exp-category" required class="w-full bg-gray-100 rounded-2xl pl-4 pr-10 py-3.5 outline-none focus:ring-2 focus:ring-transparent transition-shadow font-medium text-sm sm:text-base text-gray-700 appearance-none cursor-pointer">
                   <option value="" disabled selected>Kategori</option>
                   <option value="Makanan">Makanan</option>
                   <option value="Transportasi">Transportasi</option>
@@ -168,7 +163,7 @@
               <!-- TANGGAL -->
               <!-- [BARU] Gunakan flex-1 dan min-w-0 -->
               <div class="relative flex-1 min-w-0">
-                <input type="date" id="exp-date" required onclick="this.showPicker()" class="w-full min-w-0 appearance-none bg-gray-100 rounded-2xl pl-3 sm:pl-4 pr-10 py-3.5 outline-none focus:ring-2 focus:ring-[#2896FF] transition-shadow font-medium text-sm sm:text-base tracking-tighter sm:tracking-normal text-gray-700 cursor-pointer">
+                <input type="date" id="exp-date" required onclick="this.showPicker()" class="w-full min-w-0 appearance-none bg-gray-100 rounded-2xl pl-3 sm:pl-4 pr-10 py-3.5 outline-none focus:ring-2 focus:ring-transparent transition-shadow font-medium text-sm sm:text-base tracking-tighter sm:tracking-normal text-gray-700 cursor-pointer">
                 <div class="absolute inset-y-0 right-0 pr-3 sm:pr-4 flex items-center pointer-events-none">
                   <i data-lucide="calendar" class="w-5 h-5 text-gray-400"></i>
                 </div>
@@ -181,7 +176,7 @@
                 <input type="text" inputmode="numeric" id="exp-amount" required placeholder="0" class="w-full bg-gray-100 rounded-2xl pl-12 pr-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2896FF] transition-shadow font-bold text-sm sm:text-base">
               </div>
             </div>
-            <button type="submit" id="btn-submit-expense" class="w-full bg-gradient-to-b from-[#55E1FF] to-[#2896FF] text-white rounded-2xl px-4 py-3.5 font-bold mt-2 hover:opacity-90 active:scale-[0.98] transition-all shadow-[0_4px_12px_rgba(40,150,255,0.3)]">
+            <button type="submit" id="btn-submit-expense" class="w-full bg-gradient-to-b from-[#55E1FF] to-[#2896FF] text-white rounded-2xl px-4 py-3.5 font-semibold mt-2 hover:opacity-90 active:scale-[0.98] transition-all shadow-[0_4px_12px_rgba(40,150,255,0.3)]">
               Simpan Pengeluaran
             </button>
           </form>
@@ -204,12 +199,54 @@
 
       <!-- HALAMAN 2: ANALYTICS -->
       <section id="page-analytics" class="page-section hidden animate-fade-in">
-        
-        <!-- Header & Filter Tanggal -->
-        <div class="flex flex-wrap justify-between items-center gap-3 sm:gap-4 mb-4">
-          <h2 class="text-2xl sm:text-3xl font-bold tracking-tight">Dashboard</h2>
-          <input type="month" id="filter-month" class="bg-gray-200/60 rounded-xl px-3 py-2 sm:px-4 outline-none focus:ring-2 focus:ring-[#2896FF] text-sm font-bold text-gray-700 cursor-pointer shadow-sm border border-transparent hover:bg-gray-200 transition-colors">
+
+        <!-- [BARU] Header Brand Logo, Sapaan & Filter Tanggal -->
+        <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
+          
+          <!-- Logo & Sapaan (Hanya muncul di Mobile, karena di Desktop sudah ada di Sidebar) -->
+          <div class="flex items-center gap-3 md:hidden">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#55E1FF] to-[#2896FF] flex items-center justify-center text-white shadow-[0_4px_10px_rgba(40,150,255,0.3)]">
+              <i data-lucide="wallet" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <p class="text-[10px] font-bold text-gray-800 uppercase tracking-widest mb-0.5">PengeluaranKu</p>
+              <h2 id="greeting-text-mobile" class="text-2xl font-bold tracking-tight text-slate-800 leading-none">Halo, ...</h2>
+            </div>
+          </div>
+
+          <!-- Judul untuk Desktop -->
+          <h2 class="hidden md:block text-3xl font-bold tracking-tight text-slate-800">Beranda</h2>
+
+          <div class="flex items-center justify-between w-full md:w-auto gap-3">
+            
+            <!-- Tanggal (Di Kiri) -->
+            <input type="month" id="filter-month" class="bg-gray-100/80 rounded-xl px-3 py-2 sm:px-4 outline-none focus:ring-2 focus:ring-[#2896FF] text-sm font-bold text-gray-700 cursor-pointer shadow-sm border border-transparent hover:bg-gray-200 transition-colors">
+            
+            <!-- Notifikasi (Di Kanan) -->
+            <button class="relative p-2.5 bg-gray-100/80 rounded-xl shadow-sm border border-black/5 text-gray-500 hover:text-[#2896FF] transition-colors active:scale-95 cursor-pointer">
+              <i data-lucide="bell" class="w-5 h-5"></i>
+              <!-- Titik merah indikator notifikasi -->
+            </button>
+
+          </div>
         </div>
+
+        <div class="flex flex-col items-center justify-center mb-12 mt-12 text-center">
+          <span class="text-slate-500 text-sm font-bold mb-1">Total Pengeluaran</span>
+          <!-- Angka raksasa (text-4xl / text-5xl) -->
+          <span class="text-4xl sm:text-5xl font-bold tracking-tight text-slate-800 mb-3" id="total-month">Rp 0</span>
+          
+          <!-- Teks Tren Perbandingan -->
+          <div id="trend-comparison" class="flex items-center justify-center gap-1.5 text-sm font-bold text-slate-500">
+            <i data-lucide="minus" class="w-4 h-4"></i>
+            <span>Menghitung...</span>
+          </div>
+        </div>
+
+        <a href="#/input" class="flex justify-center items-center gap-2 w-full bg-gradient-to-b from-[#55E1FF] to-[#2896FF] text-white rounded-[1.25rem] px-4 py-4 mb-6 font-semibold shadow-[0_8px_30px_rgb(0,0,0,0.04)]  transition-all cursor-pointer">
+          <i data-lucide="plus-circle" class="w-5 h-5"></i>
+          <span>Mulai Catat Pengeluaran</span>
+        </a>
 
         <!-- Filter Kategori -->
         <div class="flex overflow-x-auto gap-2 sm:gap-3 mb-6 pb-2 hide-scrollbar">
@@ -221,16 +258,25 @@
           <button class="filter-bubble px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Lainnya">Lainnya</button>
         </div>
 
-        <!-- Ringkasan Widget -->
-        <div class="grid grid-cols-2 gap-3 md:gap-4 mb-6">
-          <div class="bg-white rounded-3xl p-4 sm:p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col justify-center overflow-hidden border border-black/5">
-            <span class="text-gray-500 text-xs sm:text-sm font-bold mb-1 truncate">Total Pengeluaran</span>
-            <span class="text-lg sm:text-2xl md:text-3xl font-bold tracking-tight text-gray-900 truncate" id="total-month">Rp 0</span>
+        <!--[BARU] Rata-rata Harian Card -->
+        <div class="bg-white rounded-3xl p-4 sm:p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-black/5 mb-6 flex items-center gap-3 sm:gap-4 transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)]">
+          
+          <!-- Icon Box (Tinted Blue) -->
+          <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-[#55E1FF]/20 to-[#2896FF]/20 flex items-center justify-center flex-shrink-0 border border-[#2896FF]/10">
+            <i data-lucide="calculator" class="w-6 h-6 sm:w-7 sm:h-7 text-[#2896FF]"></i>
           </div>
-          <div class="bg-white rounded-3xl p-4 sm:p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col justify-center overflow-hidden border border-black/5">
-            <span class="text-gray-500 text-xs sm:text-sm font-bold mb-1 truncate">Rata-rata Harian</span>
-            <span class="text-lg sm:text-2xl md:text-3xl font-bold tracking-tight text-gray-900 truncate" id="daily-avg">Rp 0</span>
+          
+          <!-- Teks Info (Tengah) -->
+          <div class="flex-1 min-w-0">
+            <h3 class="text-slate-800 text-sm sm:text-base font-bold truncate">Rata-rata Harian</h3>
+            <p class="text-slate-400 text-[11px] sm:text-xs font-medium mt-0.5 truncate">Dari <span id="days-filled" class="text-[#2896FF] font-bold">0</span> hari aktif</p>
           </div>
+
+          <!-- Nominal (Kanan) -->
+          <div class="text-right flex-shrink-0 pl-2">
+            <span class="text-xl sm:text-2xl font-bold tracking-tight text-slate-800" id="daily-avg">Rp 0</span>
+          </div>
+          
         </div>
 
         <!-- Charts Grid -->
@@ -254,9 +300,9 @@
           <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
             <h3 class="font-bold tracking-tight">Grafik Pengeluaran (<span id="daily-chart-title">Bulan Ini</span>)</h3>
             <div class="relative inline-flex bg-gray-100/80 rounded-xl p-1 border border-black/5">
-              <div id="slider-bg" class="absolute top-1 bottom-1 left-1 w-24 bg-white rounded-lg shadow-[0_2px_8px_rgb(0,0,0,0.08)] transition-transform duration-300 ease-in-out transform translate-x-0"></div>
-              <button id="btn-view-month" class="relative z-10 px-4 py-1.5 text-xs font-bold text-gray-900 w-24 transition-colors cursor-pointer">Bulanan</button>
-              <button id="btn-view-day" class="relative z-10 px-4 py-1.5 text-xs font-bold text-gray-400 w-24 transition-colors cursor-pointer">Harian</button>
+              <div id="slider-bg" class="absolute top-1 bottom-1 left-1 w-24 bg-gradient-to-b from-[#55E1FF] to-[#2896FF] rounded-lg shadow-[0_2px_8px_rgb(0,0,0,0.08)] transition-transform duration-300 ease-in-out transform translate-x-0"></div>
+              <button id="btn-view-month" class="relative z-10 px-4 py-1.5 text-xs font-semibold text-white w-24 transition-colors cursor-pointer">Bulanan</button>
+              <button id="btn-view-day" class="relative z-10 px-4 py-1.5 text-xs font-semibold text-gray-400 w-24 transition-colors cursor-pointer">Harian</button>
             </div>
           </div>
           <div class="relative h-56 w-full">

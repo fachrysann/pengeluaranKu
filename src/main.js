@@ -1,5 +1,5 @@
 import './style.css'
-import { createIcons, PlusCircle, PieChart, Trash2, Calendar, Tags, Utensils, Car, Gamepad2, Receipt, Package, Wallet, LogOut, Mail, Lock, Eye, EyeOff, AlertCircle, ArrowRight, User, ChevronDown } from 'lucide'
+import { createIcons, Home, PlusCircle, PieChart, Trash2, Calendar, Tags, Utensils, Car, Gamepad2, Receipt, Package, Wallet, LogOut, Mail, Lock, Eye, EyeOff, AlertCircle, ArrowRight, User, ChevronDown, TrendingDown, TrendingUp, Minus, Bell, Calculator } from 'lucide'
 import Chart from 'chart.js/auto'
 import { createClient } from '@supabase/supabase-js'
 
@@ -94,25 +94,64 @@ const renderExpenseList = async (forceFetch = false) => {
     createIcons({ icons: { Trash2 } }); return;
   }
 
-  listContainer.innerHTML = expenses.map(exp => `
-    <div class="flex items-center justify-between p-4 bg-white rounded-[1.25rem] shadow-[0_2px_10px_rgb(0,0,0,0.02)] border border-black/5 mb-3 group transition-all">
-      <div class="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
-        <div class="w-12 h-12 rounded-xl flex items-center justify-center text-white flex-shrink-0" style="background-color: ${appleColors[exp.category] || '#ccc'}">
-          <i data-lucide="${categoryIcons[exp.category] || 'package'}" class="w-6 h-6 text-white drop-shadow-sm"></i>
+  // --- [BARU] LOGIKA PENGELOMPOKAN BERDASARKAN TANGGAL ---
+  const groupedExpenses =[];
+  let currentDateLabel = null;
+  let currentGroup = null;
+
+  // Karena data sudah urut dari yang terbaru, kita tinggal memecahnya
+  expenses.forEach(exp => {
+    const label = formatDate(exp.date); // Menghasilkan "Hari ini", "Kemarin", atau "27 Mar 2026"
+    
+    if (label !== currentDateLabel) {
+      currentDateLabel = label;
+      currentGroup = { label: label, items:[] };
+      groupedExpenses.push(currentGroup);
+    }
+    currentGroup.items.push(exp);
+  });
+
+  // --- [BARU] RENDER HTML BERDASARKAN KELOMPOK ---
+  let htmlContent = '';
+
+  groupedExpenses.forEach(group => {
+    // 1. Render Judul Tanggal (Header)
+    htmlContent += `
+      <h4 class="text-xs sm:text-sm font-bold text-slate-400 mt-6 mb-3 ml-2 uppercase tracking-wider">
+        ${group.label}
+      </h4>
+      <div class="space-y-3">
+    `;
+
+    // 2. Render Item Pengeluaran di bawah tanggal tersebut
+    group.items.forEach(exp => {
+      htmlContent += `
+        <div class="flex items-center justify-between p-4 bg-white rounded-[1.25rem] shadow-[0_2px_10px_rgb(0,0,0,0.02)] border border-black/5 group transition-all">
+          <div class="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
+            <div class="w-12 h-12 rounded-xl flex items-center justify-center text-white flex-shrink-0" style="background-color: ${appleColors[exp.category] || '#ccc'}">
+              <i data-lucide="${categoryIcons[exp.category] || 'package'}" class="w-6 h-6 text-white drop-shadow-sm"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h4 class="font-bold text-slate-800 tracking-tight capitalize truncate">${exp.name}</h4>
+              <!-- Tanggal dihapus dari sini, hanya menyisakan Kategori -->
+              <p class="text-[11px] sm:text-xs text-slate-400 font-bold mt-0.5 truncate">${exp.category}</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 sm:gap-4 pl-2 flex-shrink-0">
+            <!-- Ditambahkan tanda minus (-) di depan nominal agar persis seperti Apple Wallet -->
+            <span class="font-bold text-slate-800 text-sm sm:text-base">- ${formatRupiah(exp.amount)}</span>
+            <button onclick="window.deleteItem('${exp.id}')" class="text-gray-300 hover:text-[#FF3B30] p-1.5 sm:p-2 rounded-full hover:bg-red-50 transition-colors">
+              <i data-lucide="trash-2" class="w-5 h-5"></i>
+            </button>
+          </div>
         </div>
-        <div class="flex-1 min-w-0">
-          <h4 class="font-bold text-gray-900 tracking-tight capitalize truncate">${exp.name}</h4>
-          <p class="text-[11px] sm:text-xs text-gray-500 font-bold mt-0.5 truncate">${exp.category} • ${formatDate(exp.date)}</p>
-        </div>
-      </div>
-      <div class="flex items-center gap-2 sm:gap-4 pl-2 flex-shrink-0">
-        <span class="font-bold text-gray-900 text-sm sm:text-base">${formatRupiah(exp.amount)}</span>
-        <button onclick="window.deleteItem('${exp.id}')" class="text-gray-300 hover:text-[#FF3B30] p-1.5 sm:p-2 rounded-full hover:bg-red-50 transition-colors">
-          <i data-lucide="trash-2" class="w-5 h-5"></i>
-        </button>
-      </div>
-    </div>
-  `).join('');
+      `;
+    });
+
+    htmlContent += `</div>`; // Tutup div space-y-3
+  });
+
+  listContainer.innerHTML = htmlContent;
   createIcons({ icons: { Trash2, Utensils, Car, Gamepad2, Receipt, Package } });
 };
 
@@ -143,15 +182,62 @@ const updateAnalytics = async (forceFetch = false) => {
     return d.getFullYear() === selYear && (d.getMonth() + 1) === selMonth && (catFilter === 'Semua' || exp.category === catFilter);
   });
 
+// 1. Hitung Total Bulan Ini
   const totalMonth = monthExpenses.reduce((sum, exp) => sum + Number(exp.amount), 0);
   document.getElementById('total-month').innerText = formatRupiah(totalMonth);
 
-  const now = new Date();
-  let daysPassed = (selYear === now.getFullYear() && selMonth === (now.getMonth() + 1)) ? (now.getDate() || 1) : new Date(selYear, selMonth, 0).getDate();
-  document.getElementById('daily-avg').innerText = formatRupiah(totalMonth / daysPassed);
+  // --- [BARU] Hitung Rata-rata Harian (Berdasarkan hari yang terisi) ---
+  // Menggunakan Set() untuk mengambil tanggal unik (menghilangkan duplikat jika 1 hari ada 3 pengeluaran)
+  const uniqueDays = new Set(monthExpenses.map(exp => exp.date)).size;
+  
+  // Jika belum ada hari terisi, rata-rata 0. Jika ada, bagi total dengan jumlah hari terisi.
+  const dailyAvg = uniqueDays === 0 ? 0 : totalMonth / uniqueDays;
+  
+  const dailyAvgEl = document.getElementById('daily-avg');
+  const daysFilledEl = document.getElementById('days-filled');
+  if (dailyAvgEl) dailyAvgEl.innerText = formatRupiah(dailyAvg);
+  if (daysFilledEl) daysFilledEl.innerText = uniqueDays;
+  // ---------------------------------------------------------------------
+
+  // 2. Hitung Total Bulan Lalu (Untuk Perbandingan)
+  let lastMonth = selMonth - 1;
+  let lastMonthYear = selYear;
+  if (lastMonth === 0) {
+    lastMonth = 12;
+    lastMonthYear -= 1;
+  }
+
+  const lastMonthExpenses = expenses.filter(exp => {
+    const d = new Date(exp.date);
+    return d.getFullYear() === lastMonthYear && (d.getMonth() + 1) === lastMonth && (catFilter === 'Semua' || exp.category === catFilter);
+  });
+  const totalLastMonth = lastMonthExpenses.reduce((sum, exp) => sum + Number(exp.amount), 0);
+
+  // 3. Render Teks Tren Perbandingan
+  const trendContainer = document.getElementById('trend-comparison');
+  const diff = totalMonth - totalLastMonth;
+
+  if (totalLastMonth === 0 && totalMonth === 0) {
+    trendContainer.innerHTML = `<i data-lucide="minus" class="w-4 h-4"></i><span>Belum ada data</span>`;
+  } else if (diff > 0) {
+    // Jika lebih boros (Merah)
+    trendContainer.innerHTML = `<i data-lucide="trending-up" class="w-4 h-4 text-red-500"></i><span>${formatRupiah(diff)} lebih banyak dari bulan lalu</span>`;
+  } else if (diff < 0) {
+    // Jika lebih hemat (Hijau)
+    trendContainer.innerHTML = `<i data-lucide="trending-down" class="w-4 h-4 text-green-500"></i><span>${formatRupiah(Math.abs(diff))} lebih sedikit dari bulan lalu</span>`;
+  } else {
+    // Jika sama persis
+    trendContainer.innerHTML = `<i data-lucide="minus" class="w-4 h-4 text-slate-400"></i><span>Sama persis dengan bulan lalu</span>`;
+  }
+  
+  // Render icon baru yang disuntikkan
+  createIcons({ icons: { TrendingDown, TrendingUp, Minus } });
 
   const categoryData = {};
   monthExpenses.forEach(exp => { categoryData[exp.category] = (categoryData[exp.category] || 0) + Number(exp.amount); });
+
+  // [BARU] Tambahkan kembali variabel 'now' di sini!
+  const now = new Date();
 
   let endDate = (selYear === now.getFullYear() && selMonth === (now.getMonth() + 1)) ? new Date() : new Date(selYear, selMonth, 0); 
   const last7Days = Array.from({length: 7}, (_, i) => { const d = new Date(endDate); d.setDate(d.getDate() - i); return d.toISOString().split('T')[0]; }).reverse();
@@ -200,16 +286,68 @@ const renderCharts = (categoryData, trendData, trendLabels, dailyData, dailyLabe
     }
   });
 
+// --------------------------------------------------------
+  // Chart 2: Tren 7 Hari Terakhir (Bar Chart)
+  // --------------------------------------------------------
   const ctxTrend = document.getElementById('trendChart').getContext('2d');
   if (trendChartInstance) trendChartInstance.destroy();
+  
   const gradientBar = ctxTrend.createLinearGradient(0, 0, 0, 200);
-  gradientBar.addColorStop(0, '#55E1FF'); gradientBar.addColorStop(1, '#2896FF');
+  gradientBar.addColorStop(0, '#55E1FF'); 
+  gradientBar.addColorStop(1, '#2896FF');
+  
   trendChartInstance = new Chart(ctxTrend, {
     type: 'bar',
-    data: { labels: trendLabels, datasets:[{ data: trendData, backgroundColor: gradientBar, borderRadius: 4 }] },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false, beginAtZero: true }, x: { grid: { display: false }, border: { display: false }, ticks: { font: { weight: 'bold' } } } } }
+    data: { 
+      labels: trendLabels, 
+      datasets:[{ 
+        data: trendData, 
+        backgroundColor: gradientBar, 
+        borderRadius: 4 
+      }] 
+    },
+    options: { 
+      responsive: true, 
+      maintainAspectRatio: false, 
+      plugins: { 
+        legend: { display: false },
+        // [BARU] Format Tooltip Rupiah saat batang disentuh
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              return formatRupiah(context.raw); 
+            }
+          }
+        }
+      }, 
+      scales: { 
+        y: { 
+          beginAtZero: true,
+          // Garis horizontal tetap menyala (warna abu-abu halus)
+          grid: { color: '#f3f4f6', drawBorder: false }, 
+          border: { display: false },
+          ticks: { 
+            maxTicksLimit: 5, 
+            padding: 10,
+            callback: function(value) {
+              if (value >= 1000000000000) return (value / 1000000000000) + ' T'; 
+              if (value >= 1000000000) return (value / 1000000000) + ' M';       
+              if (value >= 1000000) return (value / 1000000) + ' jt';             
+              if (value >= 1000) return (value / 1000) + ' rb';                   
+              return value;                                                       
+            }
+          }
+        }, 
+        x: { 
+          // [UBAH] Matikan garis vertikal di sini (display: false)
+          grid: { display: false, drawBorder: false }, 
+          border: { display: false }, 
+          ticks: { font: { weight: 'bold' }, padding: 10 } 
+        } 
+      }
+    }
   });
-
+  
   const ctxDaily = document.getElementById('dailyChart').getContext('2d');
   if (dailyChartInstance) dailyChartInstance.destroy();
   const gradientLine = ctxDaily.createLinearGradient(0, 0, 800, 0);
@@ -235,21 +373,36 @@ const renderCharts = (categoryData, trendData, trendLabels, dailyData, dailyLabe
 // ==========================================
 const handleRoute = () => {
   const hash = window.location.hash || '#/';
-  const pageHome = document.getElementById('page-home');
-  const pageAnalytics = document.getElementById('page-analytics');
+  const pageHome = document.getElementById('page-home'); // Ini sekarang halaman Input
+  const pageAnalytics = document.getElementById('page-analytics'); // Ini sekarang Dashboard
   const navLinks = document.querySelectorAll('.nav-link');
 
   navLinks.forEach(link => {
-    if (link.getAttribute('href') === hash) { link.classList.add('text-[#2896FF]', 'bg-[#2896FF]/10'); link.classList.remove('text-gray-500'); } 
-    else { link.classList.remove('text-[#2896FF]', 'bg-[#2896FF]/10'); link.classList.add('text-gray-500'); }
+    if (link.getAttribute('href') === hash) { 
+      link.classList.add('text-[#2896FF]', 'bg-[#2896FF]/10'); 
+      link.classList.remove('text-gray-500'); 
+    } else { 
+      link.classList.remove('text-[#2896FF]', 'bg-[#2896FF]/10'); 
+      link.classList.add('text-gray-500'); 
+    }
   });
 
-  if (hash === '#/analytics') { pageHome.classList.add('hidden'); pageAnalytics.classList.remove('hidden'); updateAnalytics(false); } 
-  else { pageAnalytics.classList.add('hidden'); pageHome.classList.remove('hidden'); renderExpenseList(false); }
+  // Jika URL adalah #/input, tampilkan form Input
+  if (hash === '#/input') { 
+    pageAnalytics.classList.add('hidden'); 
+    pageHome.classList.remove('hidden'); 
+    renderExpenseList(false); 
+  } 
+  // Jika URL adalah #/ (Default), tampilkan Dashboard Analytics
+  else { 
+    pageHome.classList.add('hidden'); 
+    pageAnalytics.classList.remove('hidden'); 
+    updateAnalytics(false); 
+  }
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  createIcons({ icons: { PlusCircle, PieChart, Trash2, Calendar, Tags, Utensils, Car, Gamepad2, Receipt, Package, Wallet, LogOut, Eye, EyeOff } });
+  createIcons({ icons: { PlusCircle, PieChart, Home, Trash2, Calendar, Tags, Utensils, Car, Gamepad2, Receipt, Package, Wallet, LogOut, Eye, EyeOff } });
 
   // --- SUPABASE AUTH STATE LISTENER ---
   const authContainer = document.getElementById('auth-container');
@@ -284,7 +437,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // --- LOGIN / REGISTER LOGIC ---
-  createIcons({ icons: { PlusCircle, PieChart, Trash2, Calendar, Tags, Utensils, Car, Gamepad2, Receipt, Package, Wallet, LogOut, Mail, Lock, Eye, EyeOff, AlertCircle, ArrowRight, User, ChevronDown } });
+  createIcons({ icons: { PlusCircle, PieChart, Trash2, Calendar, Tags, Utensils, Car, Gamepad2, Receipt, Package, Wallet, LogOut, Mail, Lock, Eye, EyeOff, AlertCircle, ArrowRight, User, ChevronDown, Bell, Calculator } });
 
   let isLoginMode = true;
   const authTitle = document.getElementById('auth-title');
@@ -400,19 +553,25 @@ document.addEventListener('DOMContentLoaded', () => {
     this.value = value ? value.replace(/\B(?=(\d{3})+(?!\d))/g, ".") : '';
   });
 
-  document.getElementById('expense-form').addEventListener('submit', async (e) => {
+document.getElementById('expense-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const submitBtn = document.getElementById('btn-submit-expense');
     submitBtn.innerText = "Menyimpan data...";
     
     await db.addExpense({
-      name: document.getElementById('exp-name').value, category: document.getElementById('exp-category').value,
-      amount: document.getElementById('exp-amount').value.replace(/\./g, ''), date: document.getElementById('exp-date').value
+      name: document.getElementById('exp-name').value, 
+      category: document.getElementById('exp-category').value,
+      amount: document.getElementById('exp-amount').value.replace(/\./g, ''), 
+      date: document.getElementById('exp-date').value
     });
     
-    e.target.reset(); document.getElementById('exp-date').value = getTodayDate();
+    e.target.reset(); 
+    document.getElementById('exp-date').value = getTodayDate();
     submitBtn.innerText = "Simpan Pengeluaran";
-    updateAnalytics(true);
+    
+    // [BARU] Tambahkan await di sini agar UI langsung ter-refresh seketika!
+    await updateAnalytics(true);
+    await renderExpenseList(false);
   });
 
   // --- TOGGLES & BUBBLES ---
@@ -435,8 +594,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }));
 
   window.currentChartView = 'monthly';
-  document.getElementById('btn-view-month').addEventListener('click', () => { window.currentChartView = 'monthly'; document.getElementById('slider-bg').classList.remove('translate-x-full'); document.getElementById('btn-view-month').classList.replace('text-gray-400', 'text-gray-900'); document.getElementById('btn-view-day').classList.replace('text-gray-900', 'text-gray-400'); updateAnalytics(false); });
-  document.getElementById('btn-view-day').addEventListener('click', () => { window.currentChartView = 'daily'; document.getElementById('slider-bg').classList.add('translate-x-full'); document.getElementById('btn-view-day').classList.replace('text-gray-400', 'text-gray-900'); document.getElementById('btn-view-month').classList.replace('text-gray-900', 'text-gray-400'); updateAnalytics(false); });
+  document.getElementById('btn-view-month').addEventListener('click', () => { window.currentChartView = 'monthly'; document.getElementById('slider-bg').classList.remove('translate-x-full'); document.getElementById('btn-view-month').classList.replace('text-gray-400', 'text-white'); document.getElementById('btn-view-day').classList.replace('text-white', 'text-gray-400'); updateAnalytics(false); });
+  document.getElementById('btn-view-day').addEventListener('click', () => { window.currentChartView = 'daily'; document.getElementById('slider-bg').classList.add('translate-x-full'); document.getElementById('btn-view-day').classList.replace('text-gray-400', 'text-white'); document.getElementById('btn-view-month').classList.replace('text-white', 'text-gray-400'); updateAnalytics(false); });
 
   window.addEventListener('hashchange', handleRoute);
   handleRoute();
