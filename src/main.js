@@ -722,22 +722,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnChartPrev = document.getElementById('btn-chart-prev');
   const btnChartNext = document.getElementById('btn-chart-next');
 
-  // Jadikan fungsi global agar bisa dipanggil setelah chart selesai di-render
   window.updateChartNavButtons = () => {
     if (!chartScrollContainer || !btnChartPrev || !btnChartNext) return;
-    
-    // Jika elemen sedang disembunyikan (display: none), ukurannya 0. Abaikan pengecekan.
     if (chartScrollContainer.scrollWidth === 0) return;
 
     // Cek mentok kiri
-    if (chartScrollContainer.scrollLeft <= 0) {
+    if (chartScrollContainer.scrollLeft <= 5) {
       btnChartPrev.disabled = true;
     } else {
       btnChartPrev.disabled = false;
     }
 
-    // Cek mentok kanan (Toleransi 2px untuk pembulatan desimal layar HP)
-    if (Math.ceil(chartScrollContainer.scrollLeft + chartScrollContainer.clientWidth) >= chartScrollContainer.scrollWidth - 2) {
+    // Cek mentok kanan (Toleransi diperbesar jadi 20px agar lebih sensitif mendeteksi ujung)
+    if (Math.ceil(chartScrollContainer.scrollLeft + chartScrollContainer.clientWidth) >= chartScrollContainer.scrollWidth - 20) {
       btnChartNext.disabled = true;
     } else {
       btnChartNext.disabled = false;
@@ -745,18 +742,20 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   if (chartScrollContainer && btnChartPrev && btnChartNext) {
-    // Cek status tombol setiap kali user menggeser chart
     chartScrollContainer.addEventListener('scroll', window.updateChartNavButtons);
 
     btnChartPrev.addEventListener('click', () => {
-      chartScrollContainer.scrollBy({ left: -chartScrollContainer.clientWidth, behavior: 'smooth' });
+      // [UBAH] Geser selebar 1 kartu + 16px (dari class gap-4)
+      const scrollDistance = chartScrollContainer.firstElementChild.offsetWidth + 16;
+      chartScrollContainer.scrollBy({ left: -scrollDistance, behavior: 'smooth' });
     });
 
     btnChartNext.addEventListener('click', () => {
-      chartScrollContainer.scrollBy({ left: chartScrollContainer.clientWidth, behavior: 'smooth' });
+      //[UBAH] Geser selebar 1 kartu + 16px (dari class gap-4)
+      const scrollDistance = chartScrollContainer.firstElementChild.offsetWidth + 16;
+      chartScrollContainer.scrollBy({ left: scrollDistance, behavior: 'smooth' });
     });
   }
-  // -------------------------------------------
   // -------------------------------------------
 
 
