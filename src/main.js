@@ -1,5 +1,5 @@
 import './style.css'
-import { createIcons, Home, PlusCircle, PieChart, Trash2, Calendar, Tags, Utensils, Car, Gamepad2, Receipt, Package, Wallet, LogOut, Mail, Lock, Eye, EyeOff, AlertCircle, ArrowRight, User, ChevronDown, TrendingDown, TrendingUp, Minus, Bell, Calculator, Check, ChevronLeft, ChevronRight } from 'lucide'
+import { createIcons, Home, PlusCircle, PieChart, Trash2, Calendar, Tags, Utensils, Car, Gamepad2, Receipt, Package, Wallet, LogOut, Mail, Lock, Eye, EyeOff, AlertCircle, ArrowRight, User, ChevronDown, TrendingDown, TrendingUp, Minus, Bell, Calculator, Check, ChevronLeft, ChevronRight, Search } from 'lucide'
 import Chart from 'chart.js/auto'
 import { createClient } from '@supabase/supabase-js'
 
@@ -91,6 +91,24 @@ const renderExpenseList = async (forceFetch = false) => {
   const catFilter = window.currentHomeCategoryFilter || 'Semua';
   if (catFilter !== 'Semua') {
     expenses = expenses.filter(exp => exp.category === catFilter);
+  }
+
+  // --- [BARU] LOGIKA PENCARIAN (SEARCH) ---
+  const searchInput = document.getElementById('search-history');
+  const searchQuery = searchInput ? searchInput.value.toLowerCase() : '';
+  
+  if (searchQuery) {
+    expenses = expenses.filter(exp => exp.name.toLowerCase().includes(searchQuery));
+  }
+  // ---------------------------------------
+
+  if (expenses.length === 0) {
+    // [UBAH] Pesan kosong disesuaikan jika sedang melakukan pencarian
+    let emptyMsg = `Belum ada pengeluaran${catFilter !== 'Semua' ? ' di kategori ini' : ''}.`;
+    if (searchQuery) emptyMsg = `Pencarian "${searchQuery}" tidak ditemukan.`;
+    
+    listContainer.innerHTML = `<p class="text-gray-400 text-center py-6 font-bold">${emptyMsg}</p>`;
+    createIcons({ icons: { Trash2 } }); return;
   }
 
   if (expenses.length === 0) {
@@ -652,7 +670,7 @@ const handleRoute = () => {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  createIcons({ icons: { PlusCircle, PieChart, Home, Trash2, Calendar, Tags, Utensils, Car, Gamepad2, Receipt, Package, Wallet, LogOut, Eye, EyeOff } });
+  createIcons({ icons: { PlusCircle, PieChart, Home, Trash2, Calendar, Tags, Utensils, Car, Gamepad2, Receipt, Package, Wallet, LogOut, Eye, EyeOff, Search } });
 
   // --- SUPABASE AUTH STATE LISTENER ---
   const authContainer = document.getElementById('auth-container');
@@ -683,6 +701,14 @@ document.addEventListener('DOMContentLoaded', () => {
       cachedExpenses =[]; 
     }
   });
+
+  const searchInputEl = document.getElementById('search-history');
+  if (searchInputEl) {
+    searchInputEl.addEventListener('input', () => {
+      window.currentHistoryPage = 1; // Reset halaman ke 1 saat mencari
+      renderExpenseList(false);      // Render ulang list tanpa fetch ke database
+    });
+  }
 
   // --- LOGIN / REGISTER LOGIC ---
 // --- LOGIN / REGISTER LOGIC ---

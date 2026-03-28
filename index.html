@@ -230,13 +230,21 @@
           <!-- Riwayat Card -->
           <h3 class="text-xl font-bold tracking-tight mb-4">Riwayat Terbaru</h3>
           <div class="flex overflow-x-auto gap-2 sm:gap-3 mb-4 pb-2 hide-scrollbar">
-            <button class="filter-bubble-home px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_4px_12px_rgba(40,150,255,0.3)] bg-gradient-to-b from-[#55E1FF] to-[#2896FF] text-white" data-category="Semua">Semua</button>
-            <button class="filter-bubble-home px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Makanan">Makanan</button>
-            <button class="filter-bubble-home px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Transportasi">Transportasi</button>
-            <button class="filter-bubble-home px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Hiburan">Hiburan</button>
-            <button class="filter-bubble-home px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Tagihan">Tagihan</button>
-            <button class="filter-bubble-home px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Lainnya">Lainnya</button>
+            <button class="filter-bubble-home px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_4px_12px_rgba(40,150,255,0.3)] bg-gradient-to-b from-[#55E1FF] to-[#2896FF] text-white" data-category="Semua">🗂️ Semua</button>
+            <button class="filter-bubble-home px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Makanan">🍔 Makanan</button>
+            <button class="filter-bubble-home px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Transportasi">🚗 Transportasi</button>
+            <button class="filter-bubble-home px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Hiburan">🎮 Hiburan</button>
+            <button class="filter-bubble-home px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Tagihan">🧾 Tagihan</button>
+            <button class="filter-bubble-home px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Lainnya">📦 Lainnya</button>
           </div>
+
+          <div class="relative mb-6">
+            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <i data-lucide="search" class="w-5 h-5 text-slate-400"></i>
+            </div>
+            <input type="text" id="search-history" placeholder="Cari pengeluaran (cth: Netflix, Makan)..." class="w-full bg-white shadow-[0_2px_10px_rgb(0,0,0,0.02)] border border-black/5 rounded-2xl pl-11 pr-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2896FF]/50 transition-all font-medium text-sm text-slate-700 placeholder-slate-400">
+          </div>
+
           <div id="expense-list" class="space-y-3">
             <!-- Item render by JS -->
           </div>
@@ -303,12 +311,12 @@
 
           <!-- Filter Kategori -->
           <div class="flex overflow-x-auto gap-2 sm:gap-3 mb-6 pb-2 hide-scrollbar">
-            <button class="filter-bubble px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_4px_12px_rgba(40,150,255,0.3)] bg-gradient-to-b from-[#55E1FF] to-[#2896FF] text-white" data-category="Semua">Semua</button>
-            <button class="filter-bubble px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Makanan">Makanan</button>
-            <button class="filter-bubble px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Transportasi">Transportasi</button>
-            <button class="filter-bubble px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Hiburan">Hiburan</button>
-            <button class="filter-bubble px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Tagihan">Tagihan</button>
-            <button class="filter-bubble px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Lainnya">Lainnya</button>
+            <button class="filter-bubble px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_4px_12px_rgba(40,150,255,0.3)] bg-gradient-to-b from-[#55E1FF] to-[#2896FF] text-white" data-category="Semua">🗂️ Semua</button>
+            <button class="filter-bubble px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Makanan">🍔 Makanan</button>
+            <button class="filter-bubble px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Transportasi">🚗 Transportasi</button>
+            <button class="filter-bubble px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Hiburan">🎮 Hiburan</button>
+            <button class="filter-bubble px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Tagihan">🧾 Tagihan</button>
+            <button class="filter-bubble px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Lainnya">📦 Lainnya</button>
           </div>
 
           <!--[BARU] Rata-rata Harian Card -->
