@@ -178,7 +178,7 @@
           
           <!-- Header Brand Logo -->
           <div class="mb-6">
-            <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-800">Yuk Catat PengeluaranMu ✍️</h2>
+            <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-800">Yuk Catat PengeluaranKu ✍️</h2>
         </div>
           
           <!-- Form Card -->
@@ -332,19 +332,86 @@
             
           </div>
 
-          <!-- Charts Grid -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <div class="bg-white rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-black/5">
-              <h3 class="font-bold tracking-tight mb-4">Tren 7 Hari Terakhir</h3>
-              <div class="relative h-48 w-full">
-                <canvas id="trendChart"></canvas>
+<!-- Wrapper Utama Charts -->
+          <div class="mb-6">
+            
+            <!-- Tombol Navigasi Kiri & Kanan (Di Atas Kanan, Hanya Mobile) -->
+            <div class="flex justify-end mb-3 md:hidden">
+              <div class="flex bg-white shadow-[0_4px_12px_rgb(0,0,0,0.04)] border border-black/5 rounded-xl overflow-hidden">
+                <button onclick="document.getElementById('charts-scroll-container').scrollBy({left: -window.innerWidth, behavior: 'smooth'})" 
+                        class="px-4 py-2 text-slate-400 hover:text-[#2896FF] hover:bg-slate-50 active:bg-slate-100 border-r border-black/5 transition-colors cursor-pointer flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                </button>
+                <button onclick="document.getElementById('charts-scroll-container').scrollBy({left: window.innerWidth, behavior: 'smooth'})" 
+                        class="px-4 py-2 text-slate-400 hover:text-[#2896FF] hover:bg-slate-50 active:bg-slate-100 transition-colors cursor-pointer flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                </button>
               </div>
             </div>
-            <div class="bg-white rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-black/5">
-              <h3 class="font-bold tracking-tight mb-4">Berdasarkan Kategori</h3>
-              <div class="relative h-48 w-full">
-                <canvas id="categoryChart"></canvas>
+
+            <!-- Charts Grid (Sekarang 3 Item) -->
+            <!-- [UBAH] Tambahkan lg:grid-cols-3 agar di layar besar berjajar 3 -->
+            <div id="charts-scroll-container" class="flex lg:grid lg:grid-cols-3 md:grid md:grid-cols-2 overflow-x-auto md:overflow-visible gap-4 md:gap-6 pb-2 hide-scrollbar snap-x snap-mandatory scroll-smooth">
+              
+<!-- Card 1: Heatmap (Aktivitas Bulan Ini) -->
+              <div class="w-[100%] md:w-auto flex-shrink-0 snap-center bg-white rounded-3xl p-5 sm:p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-black/5 flex flex-col justify-between min-h-[280px]">
+                <h3 id="heatmap-title" class="font-bold tracking-tight mb-4">Aktivitas Bulan Ini</h3>
+                
+                <div class="flex-1 flex items-center justify-center w-full">
+                  <!-- [UBAH] Tambahkan w-full di sini -->
+                  <div class="flex gap-2 sm:gap-4 w-full">
+                    
+                    <!-- Label Hari (Minggu - Sabtu) -->
+                    <!-- [UBAH] Tambahkan shrink-0 agar teks hari tidak ikut menyusut -->
+                    <div class="grid grid-rows-7 gap-1.5 text-xs font-bold text-slate-400 text-right pr-1 shrink-0">
+                      <span class="flex items-center justify-end h-5 sm:h-6">Min</span>
+                      <span class="flex items-center justify-end h-5 sm:h-6">Sen</span>
+                      <span class="flex items-center justify-end h-5 sm:h-6">Sel</span>
+                      <span class="flex items-center justify-end h-5 sm:h-6">Rab</span>
+                      <span class="flex items-center justify-end h-5 sm:h-6">Kam</span>
+                      <span class="flex items-center justify-end h-5 sm:h-6">Jum</span>
+                      <span class="flex items-center justify-end h-5 sm:h-6">Sab</span>
+                    </div>
+                    
+                    <!-- Grid Heatmap -->
+                    <!-- [UBAH] Tambahkan w-full dan auto-cols-fr agar kolom membagi rata sisa ruang -->
+                    <div id="heatmap-container" class="grid grid-rows-7 grid-flow-col gap-1.5 w-full auto-cols-fr">
+                      <!-- Kotak-kotak akan muncul di sini -->
+                    </div>
+
+                  </div>
+                </div>
+
+                <!-- Legend Warna -->
+                <div class="flex items-center justify-center gap-2 mt-6 text-xs text-slate-400 font-bold">
+                  <span>Sedikit</span>
+                  <div class="flex gap-1.5">
+                    <div class="w-3.5 h-3.5 rounded-[4px] bg-slate-100"></div>
+                    <div class="w-3.5 h-3.5 rounded-[4px] bg-[#2896FF]/30"></div>
+                    <div class="w-3.5 h-3.5 rounded-[4px] bg-[#2896FF]/50"></div>
+                    <div class="w-3.5 h-3.5 rounded-[4px] bg-[#2896FF]/75"></div>
+                    <div class="w-3.5 h-3.5 rounded-[4px] bg-[#2896FF]"></div>
+                  </div>
+                  <span>Banyak</span>
+                </div>
               </div>
+
+              <!-- Card 2: Tren 7 Hari Terakhir -->
+              <div class="w-[100%] md:w-auto flex-shrink-0 snap-center bg-white rounded-3xl p-5 sm:p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-black/5">
+                <h3 class="font-bold tracking-tight mb-4">Tren 7 Hari Terakhir</h3>
+                <div class="relative h-48 w-full">
+                  <canvas id="trendChart"></canvas>
+                </div>
+              </div>
+
+              <!-- Card 3: Berdasarkan Kategori -->
+              <div class="w-[100%] md:w-auto flex-shrink-0 snap-center bg-white rounded-3xl p-5 sm:p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-black/5">
+                <h3 class="font-bold tracking-tight mb-4">Berdasarkan Kategori</h3>
+                <div class="relative h-48 w-full">
+                  <canvas id="categoryChart"></canvas>
+                </div>
+              </div>
+
             </div>
           </div>
 

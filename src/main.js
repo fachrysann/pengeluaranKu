@@ -1,5 +1,5 @@
 import './style.css'
-import { createIcons, Home, PlusCircle, PieChart, Trash2, Calendar, Tags, Utensils, Car, Gamepad2, Receipt, Package, Wallet, LogOut, Mail, Lock, Eye, EyeOff, AlertCircle, ArrowRight, User, ChevronDown, TrendingDown, TrendingUp, Minus, Bell, Calculator, Check } from 'lucide'
+import { createIcons, Home, PlusCircle, PieChart, Trash2, Calendar, Tags, Utensils, Car, Gamepad2, Receipt, Package, Wallet, LogOut, Mail, Lock, Eye, EyeOff, AlertCircle, ArrowRight, User, ChevronDown, TrendingDown, TrendingUp, Minus, Bell, Calculator, Check, ChevronLeft, ChevronRight } from 'lucide'
 import Chart from 'chart.js/auto'
 import { createClient } from '@supabase/supabase-js'
 
@@ -75,6 +75,10 @@ Chart.defaults.color = '#9CA3AF';
 // ==========================================
 let cachedExpenses =[]; // Cache data agar pindah tab cepat
 
+// Tambahkan variabel global untuk melacak halaman saat ini
+window.currentHistoryPage = 1;
+const ITEMS_PER_PAGE = 7; // Batas jumlah item per halaman (bisa kamu ubah)
+
 const renderExpenseList = async (forceFetch = false) => {
   const listContainer = document.getElementById('expense-list');
   
@@ -94,14 +98,26 @@ const renderExpenseList = async (forceFetch = false) => {
     createIcons({ icons: { Trash2 } }); return;
   }
 
-  // --- [BARU] LOGIKA PENGELOMPOKAN BERDASARKAN TANGGAL ---
+  // --- [BARU] LOGIKA PAGINATION (HALAMAN) ---
+  const totalItems = expenses.length;
+  const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+  
+  // Pastikan halaman saat ini tidak melebihi total halaman
+  if (window.currentHistoryPage > totalPages) window.currentHistoryPage = totalPages;
+  if (window.currentHistoryPage < 1) window.currentHistoryPage = 1;
+
+  // Potong array sesuai halaman saat ini
+  const startIndex = (window.currentHistoryPage - 1) * ITEMS_PER_PAGE;
+  const paginatedExpenses = expenses.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+  // --- LOGIKA PENGELOMPOKAN BERDASARKAN TANGGAL ---
   const groupedExpenses =[];
   let currentDateLabel = null;
   let currentGroup = null;
 
-  // Karena data sudah urut dari yang terbaru, kita tinggal memecahnya
-  expenses.forEach(exp => {
-    const label = formatDate(exp.date); // Menghasilkan "Hari ini", "Kemarin", atau "27 Mar 2026"
+  // [UBAH] Gunakan paginatedExpenses, bukan expenses keseluruhan
+  paginatedExpenses.forEach(exp => {
+    const label = formatDate(exp.date); 
     
     if (label !== currentDateLabel) {
       currentDateLabel = label;
@@ -111,11 +127,10 @@ const renderExpenseList = async (forceFetch = false) => {
     currentGroup.items.push(exp);
   });
 
-  // --- [BARU] RENDER HTML BERDASARKAN KELOMPOK ---
+  // --- RENDER HTML ---
   let htmlContent = '';
 
   groupedExpenses.forEach(group => {
-    // 1. Render Judul Tanggal (Header)
     htmlContent += `
       <h4 class="text-xs sm:text-sm font-bold text-slate-400 mt-6 mb-3 ml-2 uppercase tracking-wider">
         ${group.label}
@@ -123,7 +138,6 @@ const renderExpenseList = async (forceFetch = false) => {
       <div class="space-y-3">
     `;
 
-    // 2. Render Item Pengeluaran di bawah tanggal tersebut
     group.items.forEach(exp => {
       htmlContent += `
         <div class="flex items-center justify-between p-4 bg-white rounded-[1.25rem] shadow-[0_2px_10px_rgb(0,0,0,0.02)] border border-black/5 group transition-all">
@@ -133,12 +147,10 @@ const renderExpenseList = async (forceFetch = false) => {
             </div>
             <div class="flex-1 min-w-0">
               <h4 class="font-bold text-slate-800 tracking-tight capitalize truncate">${exp.name}</h4>
-              <!-- Tanggal dihapus dari sini, hanya menyisakan Kategori -->
-              <p class="text-[11px] sm:text-xs text-slate-400 font-bold mt-0.5 truncate">${exp.category}</p>
+              <p class="text-[11px] sm:text-xs text-slate-400 font-medium mt-0.5 truncate">${exp.category}</p>
             </div>
           </div>
           <div class="flex items-center gap-2 sm:gap-4 pl-2 flex-shrink-0">
-            <!-- Ditambahkan tanda minus (-) di depan nominal agar persis seperti Apple Wallet -->
             <span class="font-bold text-slate-800 text-sm sm:text-base">- ${formatRupiah(exp.amount)}</span>
             <button onclick="window.deleteItem('${exp.id}')" class="text-gray-300 hover:text-[#FF3B30] p-1.5 sm:p-2 rounded-full hover:bg-red-50 transition-colors">
               <i data-lucide="trash-2" class="w-5 h-5"></i>
@@ -147,12 +159,57 @@ const renderExpenseList = async (forceFetch = false) => {
         </div>
       `;
     });
-
-    htmlContent += `</div>`; // Tutup div space-y-3
+    htmlContent += `</div>`; 
   });
 
+  // --- [BARU] RENDER KONTROL NAVIGASI PANAH DI BAWAH ---
+  if (totalPages > 1) {
+    const isFirstPage = window.currentHistoryPage === 1;
+    const isLastPage = window.currentHistoryPage === totalPages;
+
+    htmlContent += `
+      <div class="flex justify-end items-center gap-3 sm:gap-4 mt-6 pt-4 border-t border-black/5">
+        
+        <!-- Teks Halaman -->
+        <span class="text-[11px] sm:text-xs font-bold text-slate-400">
+          Hal <span class="text-slate-700">${window.currentHistoryPage}</span> dari ${totalPages}
+        </span>
+        
+        <!-- Grup Tombol Panah (Menyatu) -->
+        <div class="flex bg-white shadow-[0_2px_8px_rgb(0,0,0,0.04)] border border-black/5 rounded-xl overflow-hidden">
+          
+          <!-- Panah Kiri -->
+          <button onclick="window.changeHistoryPage(-1)" 
+                  class="px-3 py-2 flex items-center justify-center border-r border-black/5 transition-colors ${isFirstPage ? 'bg-gray-50 text-gray-300 cursor-not-allowed' : 'text-slate-500 hover:text-[#2896FF] hover:bg-slate-50 active:bg-slate-100 cursor-pointer'}" 
+                  ${isFirstPage ? 'disabled' : ''}>
+            <i data-lucide="chevron-left" class="w-4 h-4"></i>
+          </button>
+          
+          <!-- Panah Kanan -->
+          <button onclick="window.changeHistoryPage(1)" 
+                  class="px-3 py-2 flex items-center justify-center transition-colors ${isLastPage ? 'bg-gray-50 text-gray-300 cursor-not-allowed' : 'text-slate-500 hover:text-[#2896FF] hover:bg-slate-50 active:bg-slate-100 cursor-pointer'}" 
+                  ${isLastPage ? 'disabled' : ''}>
+            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+          </button>
+
+        </div>
+      </div>
+    `;
+  }
+
   listContainer.innerHTML = htmlContent;
-  createIcons({ icons: { Trash2, Utensils, Car, Gamepad2, Receipt, Package } });
+  
+  // [UBAH] Tambahkan ChevronLeft dan ChevronRight ke dalam createIcons
+  createIcons({ icons: { Trash2, Utensils, Car, Gamepad2, Receipt, Package, ChevronLeft, ChevronRight } });
+};
+
+// --- [BARU] FUNGSI UNTUK MENGGANTI HALAMAN ---
+window.changeHistoryPage = (direction) => {
+  window.currentHistoryPage += direction;
+  renderExpenseList(false);
+  
+  // Opsional: Scroll otomatis ke bagian atas riwayat agar user tidak perlu scroll manual
+  document.getElementById('expense-list').scrollIntoView({ behavior: 'smooth', block: 'start' });
 };
 
 window.deleteItem = async (id) => {
@@ -167,6 +224,65 @@ let categoryChartInstance = null;
 let trendChartInstance = null;
 let dailyChartInstance = null;
 
+// --- FUNGSI RENDER HEATMAP ALA GITHUB ---
+const renderHeatmap = (year, month, data) => {
+  const container = document.getElementById('heatmap-container');
+  if (!container) return;
+  container.innerHTML = '';
+
+  const startDay = new Date(year, month - 1, 1).getDay(); // Cari hari pertama (0=Minggu, 6=Sabtu)
+  const daysInMonth = new Date(year, month, 0).getDate(); // Jumlah hari dalam bulan tsb
+  const maxExpense = Math.max(...data) || 1; // Cari pengeluaran tertinggi untuk skala warna
+
+  // 1. Tambahkan kotak kosong untuk hari sebelum tanggal 1
+  for (let i = 0; i < startDay; i++) {
+    const empty = document.createElement('div');
+    empty.className = 'w-full h-5 sm:h-6 rounded-[4px] bg-transparent';
+    container.appendChild(empty);
+  }
+
+  // 2. Render kotak untuk setiap hari dalam bulan tersebut
+  for (let i = 0; i < daysInMonth; i++) {
+    const amount = data[i];
+    const square = document.createElement('div');
+    
+    // Logika Level Warna (5 Tingkat)
+    let colorClass = 'bg-slate-100'; 
+    if (amount > 0) {
+      const ratio = amount / maxExpense;
+      if (ratio <= 0.25) colorClass = 'bg-[#2896FF]/30';
+      else if (ratio <= 0.5) colorClass = 'bg-[#2896FF]/50';
+      else if (ratio <= 0.75) colorClass = 'bg-[#2896FF]/75';
+      else colorClass = 'bg-[#2896FF]';
+    }
+
+    square.tabIndex = 0;
+    square.className = `w-full h-5 sm:h-6 rounded-[4px] ${colorClass} cursor-pointer transition-all hover:scale-105 hover:ring-2 hover:ring-[#2896FF]/50 focus:scale-105 focus:ring-2 focus:ring-[#2896FF]/50 relative group outline-none hover:z-50 focus:z-50`;
+    
+    // Tooltip saat di-hover (Desktop) atau di-tap/focus (Mobile)
+    const tooltip = document.createElement('div');
+    
+    // [UBAH] Container utama tooltip (hanya untuk positioning)
+    tooltip.className = 'absolute bottom-full left-1/2 -translate-x-1/2 mb-2.5 hidden group-hover:block group-focus:block z-[100] pointer-events-none';
+    
+    // [UBAH] Gunakan innerHTML untuk membuat struktur UI yang persis dengan Chart.js
+    tooltip.innerHTML = `
+      <div class="bg-white border border-black/5 shadow-[0_8px_20px_rgba(0,0,0,0.08)] rounded-xl p-3 whitespace-nowrap text-left min-w-max relative">
+        <!-- Judul (Tanggal) -->
+        <div class="text-[11px] font-semibold text-slate-400 mb-0.5">Tanggal ${i + 1}</div>
+        <!-- Nominal -->
+        <div class="text-[13px] font-bold text-slate-800">${formatRupiah(amount)}</div>
+        
+        <!-- Segitiga Kecil (Caret) di bagian bawah kotak -->
+        <div class="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-white border-b border-r border-black/5 rotate-45 rounded-sm"></div>
+      </div>
+    `;
+    
+    square.appendChild(tooltip);
+    container.appendChild(square);
+  }
+};
+
 const updateAnalytics = async (forceFetch = false) => {
   if (forceFetch || cachedExpenses.length === 0) {
     cachedExpenses = await db.getExpenses();
@@ -176,6 +292,12 @@ const updateAnalytics = async (forceFetch = false) => {
   const filterInput = document.getElementById('filter-month').value;
   const[selYear, selMonth] = filterInput.split('-').map(Number);
   const catFilter = window.currentCategoryFilter || 'Semua';
+
+  const namaBulan =["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+  const heatmapTitleEl = document.getElementById('heatmap-title');
+  if (heatmapTitleEl) {
+    heatmapTitleEl.innerText = `Aktivitas Bulan ${namaBulan[selMonth - 1]}`;
+  }
 
   const monthExpenses = expenses.filter(exp => {
     const d = new Date(exp.date);
@@ -262,6 +384,15 @@ const updateAnalytics = async (forceFetch = false) => {
   }
 
   document.getElementById('daily-chart-title').innerText = chartTitle + (catFilter === 'Semua' ? '' : ` - ${catFilter}`);
+  
+  // --- [BARU] Hitung & Render Heatmap ---
+  const totalDaysInMonthHeatmap = new Date(selYear, selMonth, 0).getDate();
+  const heatmapData = Array(totalDaysInMonthHeatmap).fill(0);
+  monthExpenses.forEach(exp => heatmapData[new Date(exp.date).getDate() - 1] += Number(exp.amount));
+  
+  renderHeatmap(selYear, selMonth, heatmapData);
+  // -------------------------------------
+
   renderCharts(categoryData, trendData, trendLabels, dailyData, dailyLabels, uniqueDays);
   
   if (window.location.hash !== '#/analytics') renderExpenseList(false); // Update list beranda juga
@@ -269,15 +400,29 @@ const updateAnalytics = async (forceFetch = false) => {
 
 const renderCharts = (categoryData, trendData, trendLabels, dailyData, dailyLabels, uniqueDays) => {
   
+  // --- [BARU] BASE CONFIG UNTUK TOOLTIP MODERN ---
+  const modernTooltipBase = {
+    backgroundColor: '#ffffff',
+    titleColor: '#94a3b8', // text-slate-400
+    bodyColor: '#1e293b',  // text-slate-800
+    titleFont: { family: "'Plus Jakarta Sans', sans-serif", size: 11, weight: '600' },
+    bodyFont: { family: "'Plus Jakarta Sans', sans-serif", size: 13, weight: 'bold' },
+    padding: 12,
+    cornerRadius: 12,
+    borderColor: 'rgba(0,0,0,0.08)', // Memberikan efek border halus sebagai pengganti shadow
+    borderWidth: 1,
+    caretSize: 6,
+    caretPadding: 10, // Jarak antara tooltip dan elemen grafik
+  };
+
   const ctxCat = document.getElementById('categoryChart').getContext('2d');
   if (categoryChartInstance) categoryChartInstance.destroy();
 
-  // --- [BARU] CUSTOM PLUGIN UNTUK TEKS DI TENGAH LINGKARAN ---
+  // CUSTOM PLUGIN UNTUK TEKS DI TENGAH LINGKARAN
   const centerTextPlugin = {
     id: 'centerText',
     beforeDraw: function(chart) {
       const ctx = chart.ctx;
-      // Dapatkan titik tengah dari area grafik (mengabaikan legend di sebelah kanan)
       const { top, left, bottom, right } = chart.chartArea;
       const centerX = (left + right) / 2;
       const centerY = (top + bottom) / 2;
@@ -286,14 +431,12 @@ const renderCharts = (categoryData, trendData, trendLabels, dailyData, dailyLabe
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       
-      // Baris 1: Tulisan "Total" (Kecil, Abu-abu)
       ctx.font = `bold 11px "Plus Jakarta Sans", sans-serif`;
-      ctx.fillStyle = '#9CA3AF'; // text-gray-400
+      ctx.fillStyle = '#9CA3AF'; 
       ctx.fillText('Total', centerX, centerY - 10);
       
-      // Baris 2: Tulisan "X Hari" (Besar, Gelap)
       ctx.font = `bold 16px "Plus Jakarta Sans", sans-serif`;
-      ctx.fillStyle = '#1E293B'; // text-slate-800
+      ctx.fillStyle = '#1E293B'; 
       ctx.fillText(`${uniqueDays || 0} Hari`, centerX, centerY + 10);
       
       ctx.restore();
@@ -314,14 +457,25 @@ const renderCharts = (categoryData, trendData, trendLabels, dailyData, dailyLabe
       responsive: true, maintainAspectRatio: false, cutout: '75%',
       plugins: { 
         legend: { position: 'right', labels: { usePointStyle: true, boxWidth: 10, boxPadding: 10, padding: 15, font: { weight: 'bold' } } }, 
-        tooltip: { enabled: Object.keys(categoryData).length > 0 } 
+        //[UBAH] Tooltip Modern untuk Doughnut
+        tooltip: { 
+          ...modernTooltipBase,
+          enabled: Object.keys(categoryData).length > 0,
+          displayColors: true,
+          usePointStyle: true,
+          boxPadding: 8,
+          callbacks: {
+            label: function(context) {
+              return ' ' + formatRupiah(context.raw);
+            }
+          }
+        } 
       }
     },
-    // [BARU] Daftarkan plugin teks tengah ke dalam chart ini
     plugins: [centerTextPlugin]
   });
 
-// --------------------------------------------------------
+  // --------------------------------------------------------
   // Chart 2: Tren 7 Hari Terakhir (Bar Chart)
   // --------------------------------------------------------
   const ctxTrend = document.getElementById('trendChart').getContext('2d');
@@ -346,9 +500,14 @@ const renderCharts = (categoryData, trendData, trendLabels, dailyData, dailyLabe
       maintainAspectRatio: false, 
       plugins: { 
         legend: { display: false },
-        // [BARU] Format Tooltip Rupiah saat batang disentuh
+        // [UBAH] Tooltip Modern untuk Bar Chart
         tooltip: {
+          ...modernTooltipBase,
+          displayColors: false,
           callbacks: {
+            title: function(context) {
+              return context[0].label; 
+            },
             label: function(context) {
               return formatRupiah(context.raw); 
             }
@@ -358,7 +517,6 @@ const renderCharts = (categoryData, trendData, trendLabels, dailyData, dailyLabe
       scales: { 
         y: { 
           beginAtZero: true,
-          // Garis horizontal tetap menyala (warna abu-abu halus)
           grid: { color: '#f3f4f6', drawBorder: false }, 
           border: { display: false },
           ticks: { 
@@ -374,7 +532,6 @@ const renderCharts = (categoryData, trendData, trendLabels, dailyData, dailyLabe
           }
         }, 
         x: { 
-          // [UBAH] Matikan garis vertikal di sini (display: false)
           grid: { display: false, drawBorder: false }, 
           border: { display: false }, 
           ticks: { font: { weight: 'bold' }, padding: 10 } 
@@ -383,21 +540,79 @@ const renderCharts = (categoryData, trendData, trendLabels, dailyData, dailyLabe
     }
   });
   
+  // --------------------------------------------------------
+  // Chart 3: Grafik Pengeluaran (Line Chart)
+  // --------------------------------------------------------
   const ctxDaily = document.getElementById('dailyChart').getContext('2d');
   if (dailyChartInstance) dailyChartInstance.destroy();
+  
   const gradientLine = ctxDaily.createLinearGradient(0, 0, 800, 0);
   gradientLine.addColorStop(0, '#55E1FF'); gradientLine.addColorStop(1, '#2896FF');
+  
   const gradientDailyBg = ctxDaily.createLinearGradient(0, 0, 0, 300);
   gradientDailyBg.addColorStop(0, 'rgba(85, 225, 255, 0.4)'); gradientDailyBg.addColorStop(1, 'rgba(40, 150, 255, 0.0)');
+  
   dailyChartInstance = new Chart(ctxDaily, {
     type: 'line',
-    data: { labels: dailyLabels, datasets:[{ data: dailyData, borderColor: gradientLine, backgroundColor: gradientDailyBg, borderWidth: 3, tension: 0.4, fill: true, pointRadius: 0, pointHoverRadius: 6, pointBackgroundColor: '#FFF', pointBorderColor: '#2896FF', pointBorderWidth: 3 }] },
+    data: { 
+      labels: dailyLabels, 
+      datasets:[{ 
+        data: dailyData, 
+        borderColor: gradientLine, 
+        backgroundColor: gradientDailyBg, 
+        borderWidth: 3, 
+        tension: 0.4, 
+        fill: true, 
+        pointRadius: 0, 
+        pointHoverRadius: 6, 
+        pointBackgroundColor: '#FFF', 
+        pointBorderColor: '#2896FF', 
+        pointBorderWidth: 3 
+      }] 
+    },
     options: {
-      responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
-      plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(context) { return formatRupiah(context.raw); } } } },
+      responsive: true, 
+      maintainAspectRatio: false, 
+      interaction: { mode: 'index', intersect: false },
+      plugins: { 
+        legend: { display: false }, 
+        // [UBAH] Tooltip Modern untuk Line Chart
+        tooltip: { 
+          ...modernTooltipBase,
+          displayColors: false,
+          callbacks: { 
+            title: function(context) {
+              // Menambahkan kata "Tanggal" atau "Bulan" agar lebih jelas
+              return window.currentChartView === 'monthly' ? 'Bulan ' + context[0].label : 'Tanggal ' + context[0].label;
+            },
+            label: function(context) { 
+              return formatRupiah(context.raw); 
+            } 
+          } 
+        } 
+      },
       scales: {
-        y: { beginAtZero: true, grid: { color: '#f3f4f6', drawBorder: false }, border: { display: false }, ticks: { maxTicksLimit: 5, padding: 10, callback: function(value) { if (value >= 1000000000000) return (value / 1000000000000) + ' T'; if (value >= 1000000000) return (value / 1000000000) + ' M'; if (value >= 1000000) return (value / 1000000) + ' jt'; if (value >= 1000) return (value / 1000) + ' k'; return value; } } },
-        x: { grid: { display: false }, border: { display: false }, ticks: { font: { weight: 'bold' }, padding: 10 } }
+        y: { 
+          beginAtZero: true, 
+          grid: { color: '#f3f4f6', drawBorder: false }, 
+          border: { display: false }, 
+          ticks: { 
+            maxTicksLimit: 5, 
+            padding: 10, 
+            callback: function(value) { 
+              if (value >= 1000000000000) return (value / 1000000000000) + ' T'; 
+              if (value >= 1000000000) return (value / 1000000000) + ' M'; 
+              if (value >= 1000000) return (value / 1000000) + ' jt'; 
+              if (value >= 1000) return (value / 1000) + ' k'; 
+              return value; 
+            } 
+          } 
+        },
+        x: { 
+          grid: { display: false }, 
+          border: { display: false }, 
+          ticks: { font: { weight: 'bold' }, padding: 10 } 
+        }
       }
     }
   });
@@ -633,9 +848,14 @@ document.getElementById('expense-form').addEventListener('submit', async (e) => 
   }));
 
   const filterBubblesHome = document.querySelectorAll('.filter-bubble-home');
-  filterBubblesHome.forEach(btn => btn.addEventListener('click', (e) => {
-    window.currentHomeCategoryFilter = e.target.getAttribute('data-category');
-    applyFilterUI(filterBubblesHome, window.currentHomeCategoryFilter); renderExpenseList(false);
+    filterBubblesHome.forEach(btn => btn.addEventListener('click', (e) => {
+      window.currentHomeCategoryFilter = e.target.getAttribute('data-category');
+      applyFilterUI(filterBubblesHome, window.currentHomeCategoryFilter); 
+      
+      // [BARU] Reset halaman ke 1 setiap kali ganti filter
+      window.currentHistoryPage = 1; 
+      
+      renderExpenseList(false);
   }));
 
   window.currentChartView = 'monthly';
