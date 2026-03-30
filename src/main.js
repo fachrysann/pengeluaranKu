@@ -1,5 +1,5 @@
 import './style.css'
-import { createIcons, Home, PlusCircle, PieChart, Trash2, Calendar, Tags, Utensils, Car, Gamepad2, Receipt, Package, Wallet, LogOut, Mail, Lock, Eye, EyeOff, AlertCircle, ArrowRight, ArrowLeft, User, ChevronDown, TrendingDown, TrendingUp, Minus, Bell, Calculator, Check, ChevronLeft, ChevronRight, Search, Settings, Pencil, Plus, X, CheckCircle } from 'lucide'
+import { createIcons, Home, PlusCircle, PieChart, Trash2, Calendar, Tags, Utensils, Car, Gamepad2, Receipt, Package, Wallet, LogOut, Mail, Lock, Eye, EyeOff, AlertCircle, ArrowRight, ArrowLeft, User, ChevronDown, TrendingDown, TrendingUp, Minus, Bell, Calculator, Check, ChevronLeft, ChevronRight, Search, Settings, Pencil, Plus, X, CheckCircle, Trophy, SlidersHorizontal, CalendarCheck, Shield, Settings2, HelpCircle } from 'lucide'
 import Chart from 'chart.js/auto'
 import { createClient } from '@supabase/supabase-js'
 
@@ -139,9 +139,35 @@ const renderExpenseList = async (forceFetch = false) => {
     expenses = expenses.filter(exp => exp.name.toLowerCase().includes(searchQuery));
   }
 
+  // ==========================================
+  // [BARU] LOGIKA FILTER LANJUTAN
+  // ==========================================
+  if (window.advFilters) {
+    if (window.advFilters.minAmount > 0) {
+      expenses = expenses.filter(exp => Number(exp.amount) >= window.advFilters.minAmount);
+    }
+    if (window.advFilters.maxAmount > 0) {
+      expenses = expenses.filter(exp => Number(exp.amount) <= window.advFilters.maxAmount);
+    }
+    if (window.advFilters.startDate) {
+      expenses = expenses.filter(exp => exp.date >= window.advFilters.startDate);
+    }
+    if (window.advFilters.endDate) {
+      expenses = expenses.filter(exp => exp.date <= window.advFilters.endDate);
+    }
+  }
+
   if (expenses.length === 0) {
     let emptyMsg = `Belum ada pengeluaran${catFilter !== 'Semua' ? ' di kategori ini' : ''}.`;
-    if (searchQuery) emptyMsg = `Pencarian "${searchQuery}" tidak ditemukan.`;
+    
+    // Cek apakah ada filter lanjutan yang sedang aktif
+    const isFilterActive = window.advFilters && (window.advFilters.minAmount > 0 || window.advFilters.maxAmount > 0 || window.advFilters.startDate || window.advFilters.endDate);
+    
+    if (searchQuery) {
+      emptyMsg = `Pencarian "${searchQuery}" tidak ditemukan.`;
+    } else if (isFilterActive) {
+      emptyMsg = `Tidak ada pengeluaran yang sesuai dengan filter.`;
+    }
     
     listContainer.innerHTML = `<p class="text-gray-400 text-center py-6 font-bold">${emptyMsg}</p>`;
     createIcons({ icons: { Trash2 } }); return;
@@ -211,20 +237,25 @@ const renderExpenseList = async (forceFetch = false) => {
 
     htmlContent += `
       <div class="flex justify-end items-center gap-3 sm:gap-4 mt-6 pt-4 border-t border-black/5">
+        
         <span class="text-[11px] sm:text-xs font-bold text-slate-400">
           Hal <span class="text-slate-700">${window.currentHistoryPage}</span> dari ${totalPages}
         </span>
-        <div class="flex bg-white shadow-[0_2px_8px_rgb(0,0,0,0.04)] border border-black/5 rounded-xl overflow-hidden">
+        
+        <div class="flex bg-white shadow-[0_4px_12px_rgb(0,0,0,0.04)] border border-black/5 rounded-xl overflow-hidden">
+          
           <button onclick="window.changeHistoryPage(-1)" 
-                  class="px-3 py-2 flex items-center justify-center border-r border-black/5 transition-colors ${isFirstPage ? 'bg-gray-50 text-gray-300 cursor-not-allowed' : 'text-slate-500 hover:text-[#2896FF] hover:bg-slate-50 active:bg-slate-100 cursor-pointer'}" 
+                  class="px-4 py-2 text-slate-400 hover:text-[#2896FF] hover:bg-slate-50 active:bg-slate-100 border-r border-black/5 transition-colors cursor-pointer flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed" 
                   ${isFirstPage ? 'disabled' : ''}>
-            <i data-lucide="chevron-left" class="w-4 h-4"></i>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
           </button>
+          
           <button onclick="window.changeHistoryPage(1)" 
-                  class="px-3 py-2 flex items-center justify-center transition-colors ${isLastPage ? 'bg-gray-50 text-gray-300 cursor-not-allowed' : 'text-slate-500 hover:text-[#2896FF] hover:bg-slate-50 active:bg-slate-100 cursor-pointer'}" 
+                  class="px-4 py-2 text-slate-400 hover:text-[#2896FF] hover:bg-slate-50 active:bg-slate-100 transition-colors cursor-pointer flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed" 
                   ${isLastPage ? 'disabled' : ''}>
-            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
           </button>
+
         </div>
       </div>
     `;
@@ -361,6 +392,44 @@ const updateAnalytics = async (forceFetch = false) => {
   const categoryData = {};
   monthExpenses.forEach(exp => { categoryData[exp.category] = (categoryData[exp.category] || 0) + Number(exp.amount); });
 
+  // ==========================================
+  // [BARU] Hitung Kategori Teratas & Hari Tertinggi
+  // ==========================================
+  const catEmojis = { Makanan: '🍔', Transportasi: '🚗', Hiburan: '🎮', Tagihan: '🧾', Lainnya: '📦' };
+  let topCatText = "-";
+
+  if (Object.keys(categoryData).length > 0) {
+    const topCat = Object.keys(categoryData).reduce((a, b) => categoryData[a] > categoryData[b] ? a : b);
+    topCatText = `${topCat} ${catEmojis[topCat] || ''}`;
+  }
+
+  const topCatEl = document.getElementById('top-category');
+  if (topCatEl) topCatEl.innerText = topCatText;
+
+  const dailySums = {};
+  monthExpenses.forEach(exp => {
+    dailySums[exp.date] = (dailySums[exp.date] || 0) + Number(exp.amount);
+  });
+
+  let highestDate = null;
+  let maxAmount = 0;
+  for (const[date, amount] of Object.entries(dailySums)) {
+    if (amount > maxAmount) {
+      maxAmount = amount;
+      highestDate = date;
+    }
+  }
+
+  let highestDayText = "-";
+  if (highestDate) {
+    const d = new Date(highestDate);
+    // Akan merender format tanggal seperti "12 Mar"
+    highestDayText = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }); 
+  }
+
+  const highestDayEl = document.getElementById('highest-day');
+  if (highestDayEl) highestDayEl.innerText = highestDayText;
+
   const now = new Date();
   let endDate = (selYear === now.getFullYear() && selMonth === (now.getMonth() + 1)) ? new Date() : new Date(selYear, selMonth, 0); 
   const last7Days = Array.from({length: 7}, (_, i) => { const d = new Date(endDate); d.setDate(d.getDate() - i); return d.toISOString().split('T')[0]; }).reverse();
@@ -447,7 +516,7 @@ const renderCharts = (categoryData, trendData, trendLabels, dailyData, dailyLabe
     data: {
       labels: Object.keys(categoryData).length ? Object.keys(categoryData) :['Belum ada data'],
       datasets:[{
-        data: Object.values(categoryData).length ? Object.values(categoryData) : [1],
+        data: Object.values(categoryData).length ? Object.values(categoryData) :[1],
         backgroundColor: Object.values(categoryData).length ? Object.keys(categoryData).map(k => appleColors[k]) : ['#f3f4f6'],
         borderWidth: 0, hoverOffset: 4
       }]
@@ -468,7 +537,7 @@ const renderCharts = (categoryData, trendData, trendLabels, dailyData, dailyLabe
         } 
       }
     },
-    plugins: [centerTextPlugin]
+    plugins:[centerTextPlugin]
   });
 
   const ctxTrend = document.getElementById('trendChart').getContext('2d');
@@ -567,15 +636,14 @@ const renderCharts = (categoryData, trendData, trendLabels, dailyData, dailyLabe
 // 7. INITIALIZATION (DOM CONTENT LOADED)
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
-  createIcons({ icons: { PlusCircle, PieChart, Home, Trash2, Calendar, Tags, Utensils, Car, Gamepad2, Receipt, Package, Wallet, LogOut, Mail, Lock, Eye, EyeOff, AlertCircle, ArrowRight, ArrowLeft, User, ChevronDown, TrendingDown, TrendingUp, Minus, Bell, Calculator, Check, ChevronLeft, ChevronRight, Search, Settings, Pencil, Plus, X, CheckCircle } });
-
+  createIcons({ icons: { PlusCircle, PieChart, Home, Trash2, Calendar, Tags, Utensils, Car, Gamepad2, Receipt, Package, Wallet, LogOut, Mail, Lock, Eye, EyeOff, AlertCircle, ArrowRight, ArrowLeft, User, ChevronDown, TrendingDown, TrendingUp, Minus, Bell, Calculator, Check, ChevronLeft, ChevronRight, Search, Settings, Pencil, Plus, X, CheckCircle, Trophy, SlidersHorizontal, CalendarCheck, Shield, Settings2, HelpCircle } });
   // --- SETTINGS (AVATAR & NAMA) LOGIC ---
   const avatarsMap = {
-    '1': 'https://api.dicebear.com/8.x/notionists/svg?seed=Felix&backgroundColor=e2e8f0',
-    '2': 'https://api.dicebear.com/8.x/notionists/svg?seed=Aneka&backgroundColor=fef08a',
-    '3': 'https://api.dicebear.com/8.x/notionists/svg?seed=Mimi&backgroundColor=fecaca',
-    '4': 'https://api.dicebear.com/8.x/notionists/svg?seed=Oreo&backgroundColor=bbf7d0',
-    '5': 'https://api.dicebear.com/8.x/notionists/svg?seed=Leo&backgroundColor=bfdbfe'
+    '1': 'https://api.dicebear.com/9.x/dylan/svg?seed=Felix&backgroundColor=transparent',
+    '2': 'https://api.dicebear.com/9.x/dylan/svg?seed=Aneka&backgroundColor=transparent',
+    '3': 'https://api.dicebear.com/9.x/dylan/svg?seed=Mimi&backgroundColor=transparent',
+    '4': 'https://api.dicebear.com/9.x/dylan/svg?seed=Oreo&backgroundColor=transparent',
+    '5': 'https://api.dicebear.com/9.x/dylan/svg?seed=Leo&backgroundColor=transparent'
   };
 
   window.updateGreetingUI = (user) => {
@@ -626,7 +694,7 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.addEventListener('click', () => selectAvatar(btn.getAttribute('data-avatar')));
   });
 
-  window.loadProfileData = async () => {
+window.loadProfileData = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
     const metadata = user.user_metadata || {};
@@ -643,6 +711,28 @@ document.addEventListener('DOMContentLoaded', () => {
       displayAvatarEl.src = avatarsMap[currentAvatar];
     }
 
+    // ==========================================
+    // [BARU] HITUNG STATISTIK AKTIVITAS USER
+    // ==========================================
+    // Pastikan data sudah ter-fetch
+    if (cachedExpenses.length === 0) {
+      cachedExpenses = await db.getExpenses();
+    }
+    
+    // Hitung Total Catatan
+    const totalEntries = cachedExpenses.length;
+    
+    // Hitung Hari Aktif (Tanggal Unik)
+    const uniqueActiveDays = new Set(cachedExpenses.map(exp => exp.date)).size;
+
+    // Tampilkan ke UI
+    const statEntriesEl = document.getElementById('stat-total-entries');
+    const statDaysEl = document.getElementById('stat-active-days');
+    
+    if (statEntriesEl) statEntriesEl.innerText = totalEntries;
+    if (statDaysEl) statDaysEl.innerText = uniqueActiveDays;
+    // ==========================================
+
     // 2. Isi Mode Edit (Form Mode)
     document.getElementById('profile-name').value = currentFullName;
     selectAvatar(currentAvatar);
@@ -652,6 +742,8 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btn-edit-profile-mode').addEventListener('click', () => {
     document.getElementById('profile-view-mode').classList.add('hidden');
     document.getElementById('profile-form').classList.remove('hidden');
+    // [BARU] Scroll perlahan ke paling atas halaman
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 
   // Toggle Batal Edit (Kembali ke Mode Lihat)
@@ -659,6 +751,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('profile-form').classList.add('hidden');
     document.getElementById('profile-view-mode').classList.remove('hidden');
     window.loadProfileData(); // Reset form ke kondisi semula
+    // [BARU] Scroll perlahan ke paling atas halaman
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 
   // Submit Form Profile
@@ -683,6 +777,8 @@ document.addEventListener('DOMContentLoaded', () => {
       // Berhasil simpan, kembalikan tampilan ke Mode Lihat
       document.getElementById('profile-form').classList.add('hidden');
       document.getElementById('profile-view-mode').classList.remove('hidden');
+      // [BARU] Scroll perlahan ke paling atas halaman
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
       alert('Gagal memperbarui profil: ' + error.message);
     }
@@ -702,7 +798,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       authContainer.classList.remove('hidden');
       appWrapper.classList.add('hidden');
-      cachedExpenses = []; 
+      cachedExpenses =[]; 
       
       // [BARU] Reset hash ke Beranda saat logout
       window.location.hash = '#/'; 
@@ -716,6 +812,65 @@ document.addEventListener('DOMContentLoaded', () => {
       renderExpenseList(false);      
     });
   }
+
+  // ==========================================
+  // [BARU] EVENT LISTENER FILTER LANJUTAN
+  // ==========================================
+  const advPanel = document.getElementById('advanced-filter-panel');
+  const btnAdvToggle = document.getElementById('btn-advanced-filter');
+  
+  const formatInputNumeric = (e) => {
+    let val = e.target.value.replace(/[^0-9]/g, '');
+    e.target.value = val ? val.replace(/\B(?=(\d{3})+(?!\d))/g, ".") : '';
+  };
+  const minAmountEl = document.getElementById('filter-min-amount');
+  const maxAmountEl = document.getElementById('filter-max-amount');
+  if(minAmountEl) minAmountEl.addEventListener('input', formatInputNumeric);
+  if(maxAmountEl) maxAmountEl.addEventListener('input', formatInputNumeric);
+
+  if(btnAdvToggle) {
+      btnAdvToggle.addEventListener('click', () => {
+        advPanel.classList.toggle('hidden');
+        if(!advPanel.classList.contains('hidden')){
+          btnAdvToggle.classList.add('text-[#2896FF]', 'ring-2', 'ring-[#2896FF]/50');
+        } else {
+          btnAdvToggle.classList.remove('text-[#2896FF]', 'ring-2', 'ring-[#2896FF]/50');
+        }
+      });
+  }
+
+  const btnApplyFilter = document.getElementById('btn-apply-filter');
+  if(btnApplyFilter) {
+      btnApplyFilter.addEventListener('click', () => {
+        window.advFilters = {
+          minAmount: parseInt(document.getElementById('filter-min-amount').value.replace(/\./g, '')) || 0,
+          maxAmount: parseInt(document.getElementById('filter-max-amount').value.replace(/\./g, '')) || 0,
+          startDate: document.getElementById('filter-start-date').value,
+          endDate: document.getElementById('filter-end-date').value
+        };
+        advPanel.classList.add('hidden');
+        btnAdvToggle.classList.remove('text-[#2896FF]', 'ring-2', 'ring-[#2896FF]/50');
+        window.currentHistoryPage = 1;
+        renderExpenseList(false);
+      });
+  }
+
+  const btnResetFilter = document.getElementById('btn-reset-filter');
+  if(btnResetFilter) {
+      btnResetFilter.addEventListener('click', () => {
+        document.getElementById('filter-min-amount').value = '';
+        document.getElementById('filter-max-amount').value = '';
+        document.getElementById('filter-start-date').value = '';
+        document.getElementById('filter-end-date').value = '';
+        
+        window.advFilters = { minAmount: 0, maxAmount: 0, startDate: '', endDate: '' };
+        advPanel.classList.add('hidden');
+        btnAdvToggle.classList.remove('text-[#2896FF]', 'ring-2', 'ring-[#2896FF]/50');
+        window.currentHistoryPage = 1;
+        renderExpenseList(false);
+      });
+  }
+
 
   const chartScrollContainer = document.getElementById('charts-scroll-container');
   const btnChartPrev = document.getElementById('btn-chart-prev');
