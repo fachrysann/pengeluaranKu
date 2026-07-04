@@ -68,17 +68,19 @@
   stroke-width: 2.2px;
 }
 
-/* Override gaya navigasi link pada gradient background mobile */
+/* Override gaya navigasi link pada mobile (active pill menjadi gradasi biru) */
 @media (max-width: 767px) {
   nav .nav-link {
-    color: rgba(255, 255, 255, 0.7) !important;
+    color: #6B7280 !important; /* text-gray-500 */
+    background-color: transparent !important;
   }
   nav .nav-link:hover {
-    background-color: rgba(255, 255, 255, 0.1) !important;
-    color: #ffffff !important;
+    background-color: rgba(0, 0, 0, 0.05) !important;
+    color: #111827 !important;
   }
   nav .nav-link.active {
-    background-color: rgba(255, 255, 255, 0.25) !important;
+    background: linear-gradient(to bottom, #55E1FF, #2896FF) !important;
     color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(40, 150, 255, 0.25) !important;
   }
 }
