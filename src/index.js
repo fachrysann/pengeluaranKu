@@ -1,5 +1,5 @@
 import { 
-  db, formatRupiah, appleColors, initIcons, setupAuth, highlightNavigation, supabase
+  db, formatRupiah, appleColors, initIcons, setupAuth, highlightNavigation, supabase, hideLoader
 } from './common.js'
 import Chart from 'chart.js/auto'
 import { TrendingDown, TrendingUp, Minus } from 'lucide'
@@ -232,9 +232,10 @@ const renderCharts = (categoryData, trendData, trendLabels, dailyData, dailyLabe
 };
 
 const updateAnalytics = async (forceFetch = false) => {
-  if (forceFetch || cachedExpenses.length === 0) {
-    cachedExpenses = await db.getExpenses();
-  }
+  try {
+    if (forceFetch || cachedExpenses.length === 0) {
+      cachedExpenses = await db.getExpenses();
+    }
   const expenses = cachedExpenses;
   
   const filterInputVal = document.getElementById('filter-month').value;
@@ -367,6 +368,9 @@ const updateAnalytics = async (forceFetch = false) => {
   
   if (window.updateChartNavButtons) {
     setTimeout(() => window.updateChartNavButtons(), 100);
+  }
+  } finally {
+    hideLoader();
   }
 };
 

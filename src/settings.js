@@ -1,5 +1,5 @@
 import { 
-  db, avatarsMap, initIcons, setupAuth, highlightNavigation, supabase, updateGreetingUI
+  db, avatarsMap, initIcons, setupAuth, highlightNavigation, supabase, updateGreetingUI, hideLoader
 } from './common.js'
 
 let cachedExpenses = [];
@@ -20,43 +20,47 @@ const selectAvatar = (avatarId) => {
 };
 
 const loadProfileData = async () => {
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return;
-  const metadata = user.user_metadata || {};
-  
-  const currentFullName = metadata.full_name || 'Pengguna';
-  const currentEmail = user.email || 'Tidak ada email';
-  const currentAvatar = metadata.avatar_url || '1';
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    const metadata = user.user_metadata || {};
+    
+    const currentFullName = metadata.full_name || 'Pengguna';
+    const currentEmail = user.email || 'Tidak ada email';
+    const currentAvatar = metadata.avatar_url || '1';
 
-  // 1. Isi Mode Lihat (View Mode)
-  document.getElementById('display-profile-name').innerText = currentFullName;
-  document.getElementById('display-profile-email').innerText = currentEmail;
-  const displayAvatarEl = document.getElementById('display-profile-avatar');
-  if (displayAvatarEl && avatarsMap[currentAvatar]) {
-    displayAvatarEl.src = avatarsMap[currentAvatar];
+    // 1. Isi Mode Lihat (View Mode)
+    document.getElementById('display-profile-name').innerText = currentFullName;
+    document.getElementById('display-profile-email').innerText = currentEmail;
+    const displayAvatarEl = document.getElementById('display-profile-avatar');
+    if (displayAvatarEl && avatarsMap[currentAvatar]) {
+      displayAvatarEl.src = avatarsMap[currentAvatar];
+    }
+
+    // HITUNG STATISTIK AKTIVITAS USER
+    if (cachedExpenses.length === 0) {
+      cachedExpenses = await db.getExpenses();
+    }
+    
+    // Hitung Total Catatan
+    const totalEntries = cachedExpenses.length;
+    
+    // Hitung Hari Aktif (Tanggal Unik)
+    const uniqueActiveDays = new Set(cachedExpenses.map(exp => exp.date)).size;
+
+    // Tampilkan ke UI
+    const statEntriesEl = document.getElementById('stat-total-entries');
+    const statDaysEl = document.getElementById('stat-active-days');
+    
+    if (statEntriesEl) statEntriesEl.innerText = totalEntries;
+    if (statDaysEl) statDaysEl.innerText = uniqueActiveDays;
+
+    // 2. Isi Mode Edit (Form Mode)
+    document.getElementById('profile-name').value = currentFullName;
+    selectAvatar(currentAvatar);
+  } finally {
+    hideLoader();
   }
-
-  // HITUNG STATISTIK AKTIVITAS USER
-  if (cachedExpenses.length === 0) {
-    cachedExpenses = await db.getExpenses();
-  }
-  
-  // Hitung Total Catatan
-  const totalEntries = cachedExpenses.length;
-  
-  // Hitung Hari Aktif (Tanggal Unik)
-  const uniqueActiveDays = new Set(cachedExpenses.map(exp => exp.date)).size;
-
-  // Tampilkan ke UI
-  const statEntriesEl = document.getElementById('stat-total-entries');
-  const statDaysEl = document.getElementById('stat-active-days');
-  
-  if (statEntriesEl) statEntriesEl.innerText = totalEntries;
-  if (statDaysEl) statDaysEl.innerText = uniqueActiveDays;
-
-  // 2. Isi Mode Edit (Form Mode)
-  document.getElementById('profile-name').value = currentFullName;
-  selectAvatar(currentAvatar);
 };
 
 document.addEventListener('DOMContentLoaded', () => {

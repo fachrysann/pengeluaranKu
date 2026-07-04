@@ -138,6 +138,35 @@ export const highlightNavigation = () => {
   });
 };
 
+export const showLoader = () => {
+  let loader = document.getElementById('page-loader');
+  if (loader) {
+    loader.classList.remove('opacity-0', 'pointer-events-none');
+  } else {
+    loader = document.createElement('div');
+    loader.id = 'page-loader';
+    loader.className = 'fixed inset-0 z-[9999] flex items-center justify-center bg-[#F5F5F7]/80 backdrop-blur-md transition-opacity duration-300';
+    loader.innerHTML = `
+      <div class="flex flex-col items-center gap-4">
+        <div class="w-10 h-10 rounded-full border-4 border-slate-200 border-t-[#2896FF] animate-spin"></div>
+        <p class="text-xs font-semibold text-slate-400 tracking-widest animate-pulse">Memuat...</p>
+      </div>
+    `;
+    document.body.appendChild(loader);
+  }
+};
+
+export const hideLoader = () => {
+  if (window.isRedirecting) return;
+  const loader = document.getElementById('page-loader');
+  if (loader) {
+    loader.classList.add('opacity-0', 'pointer-events-none');
+    setTimeout(() => {
+      loader.remove();
+    }, 300);
+  }
+};
+
 // ==========================================
 // 5. COMMON AUTH LOGIC
 // ==========================================
@@ -264,6 +293,10 @@ export const setupAuth = (onLoginSuccess, onLogoutSuccess) => {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) {
           showError(error.message === 'Invalid login credentials' ? 'Email atau kata sandi salah.' : error.message);
+        } else {
+          window.isRedirecting = true;
+          showLoader();
+          window.location.href = '/index.html';
         }
       } else {
         const { data, error } = await supabase.auth.signUp({ 
@@ -299,6 +332,9 @@ export const setupAuth = (onLoginSuccess, onLogoutSuccess) => {
 
   // Monitor auth state changes
   supabase.auth.onAuthStateChange((event, session) => {
+    const preloadStyle = document.getElementById('auth-preload-style');
+    if (preloadStyle) preloadStyle.remove();
+
     if (session) {
       if (authContainer) authContainer.classList.add('hidden');
       if (appWrapper) appWrapper.classList.remove('hidden');
@@ -310,6 +346,8 @@ export const setupAuth = (onLoginSuccess, onLogoutSuccess) => {
     } else {
       if (authContainer) authContainer.classList.remove('hidden');
       if (appWrapper) appWrapper.classList.add('hidden');
+      
+      hideLoader();
       
       if (typeof onLogoutSuccess === 'function') {
         onLogoutSuccess();

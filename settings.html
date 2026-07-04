@@ -5,8 +5,46 @@
   <link rel="icon" type="image/svg+xml" href="/vite.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>PengeluaranKu - Pengaturan</title>
+  <link rel="stylesheet" href="/src/style.css" />
+  <script>
+    (function() {
+      var hasSession = false;
+      try {
+        for (var i = 0; i < localStorage.length; i++) {
+          var key = localStorage.key(i);
+          if (key && key.indexOf('auth-token') !== -1) {
+            var val = localStorage.getItem(key);
+            if (val) {
+              var data = JSON.parse(val);
+              if (data && (data.access_token || data.user || data.currentSession)) {
+                hasSession = true;
+              }
+            }
+            break;
+          }
+        }
+      } catch (e) {}
+      
+      var style = document.createElement('style');
+      style.id = 'auth-preload-style';
+      if (hasSession) {
+        style.innerHTML = '#auth-container { display: none !important; } #app-wrapper { display: block !important; }';
+      } else {
+        style.innerHTML = '#app-wrapper { display: none !important; } #auth-container { display: flex !important; }';
+      }
+      document.head.appendChild(style);
+    })();
+  </script>
 </head>
 <body class="bg-gradient-to-b from-[#9ccfff] to-[#F5F5F7]/100 to-40%  min-h-screen bg-fixed bg-no-repeat text-gray-900 antialiased selection:bg-[#2896FF] selection:text-white">
+
+  <!-- Page Loader Overlay -->
+  <div id="page-loader" class="fixed inset-0 z-[9999] flex items-center justify-center bg-[#F5F5F7]/80 backdrop-blur-md transition-opacity duration-300">
+    <div class="flex flex-col items-center gap-4">
+      <div class="w-10 h-10 rounded-full border-4 border-slate-200 border-t-[#2896FF] animate-spin"></div>
+      <p class="text-xs font-semibold text-slate-400 tracking-widest animate-pulse">Memuat...</p>
+    </div>
+  </div>
 
   <!-- ========================================== -->
   <!-- HALAMAN AUTENTIKASI (LOGIN / REGISTER)     -->
@@ -92,7 +130,7 @@
   <!-- APLIKASI UTAMA                             -->
   <!-- ========================================== -->
   <div id="app-wrapper" class="hidden relative">
-    <div id="app-container" class="max-w-md mx-auto md:max-w-5xl md:flex md:gap-8 pb-24 md:pb-8 pt-8 px-4 md:px-8 min-h-screen">
+    <div id="app-container" class="max-w-md mx-auto md:max-w-5xl md:flex md:gap-12 pb-16 md:pb-6 pt-8 px-4 md:px-8 min-h-screen">
 
       <div class="absolute top-0 left-0 w-full h-[45vh] sm:h-[50vh] z-0 pointer-events-none select-none"
           style="-webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%); mask-image: linear-gradient(to bottom, black 50%, transparent 100%);">
@@ -101,7 +139,7 @@
         </div>
       </div>
 
-      <div id="app-container" class="relative z-10 max-w-md mx-auto md:max-w-5xl md:flex md:gap-8 pb-24 md:pb-8 pt-8 px-4 md:px-8 min-h-screen">      
+      <div id="app-container" class="relative z-10 max-w-md mx-auto md:max-w-5xl md:flex md:gap-8 pb-16 md:pb-6 pt-8 px-4 md:px-8 min-h-screen">      
 
       <!-- Navigasi -->
       <nav class="fixed bottom-0 left-0 w-full backdrop-blur-xl bg-white/90 flex justify-evenly items-center pt-3 px-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] z-50 md:sticky md:top-8 md:self-start md:w-64 md:flex-col md:justify-start md:gap-4 md:rounded-[2rem] md:shadow-[0_8px_30px_rgb(0,0,0,0.04)] md:h-fit md:p-6 transition-all border-t border-black/10 md:border will-change-transform">
@@ -145,7 +183,7 @@
             <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-800">Profil Saya</h2>
           </div>
 
-          <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] mb-8 border border-black/5 flex flex-col items-center">
+          <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] mb-0 border border-black/5 flex flex-col items-center">
             
             <!-- ============================== -->
             <!-- MODE LIHAT PROFIL (VIEW)       -->

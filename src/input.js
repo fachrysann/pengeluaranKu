@@ -1,6 +1,6 @@
 import { 
   db, formatRupiah, formatDate, getTodayDate, appleColors, categoryIcons, 
-  initIcons, setupAuth, highlightNavigation, supabase
+  initIcons, setupAuth, highlightNavigation, supabase, hideLoader
 } from './common.js'
 import { 
   Trash2, Utensils, Car, Gamepad2, Receipt, Package, ChevronLeft, ChevronRight 
@@ -11,8 +11,9 @@ window.currentHistoryPage = 1;
 const ITEMS_PER_PAGE = 7; 
 
 const renderExpenseList = async (forceFetch = false) => {
-  const listContainer = document.getElementById('expense-list');
-  if (!listContainer) return;
+  try {
+    const listContainer = document.getElementById('expense-list');
+    if (!listContainer) return;
   
   if (forceFetch || cachedExpenses.length === 0) {
     listContainer.innerHTML = '<p class="text-center py-6 text-gray-400 font-bold animate-pulse">Memuat...</p>';
@@ -155,6 +156,9 @@ const renderExpenseList = async (forceFetch = false) => {
   // Re-create icons dynamically
   const { createIcons } = await import('lucide');
   createIcons({ icons: { Trash2, Utensils, Car, Gamepad2, Receipt, Package, ChevronLeft, ChevronRight } });
+  } finally {
+    hideLoader();
+  }
 };
 
 window.changeHistoryPage = (direction) => {
