@@ -116,19 +116,19 @@
           <p id="greeting-text-desktop" class="text-xs font-bold text-slate-400 mt-1 truncate">Halo, ...</p>
         </div>
         
-        <a href="#/" class="nav-link flex flex-col md:flex-row items-center justify-center md:justify-start gap-1 md:gap-4 w-40 h-[64px] md:w-full md:h-auto rounded-2xl text-gray-500 hover:bg-black/5 hover:text-gray-900 transition-all text-[11px] md:text-sm font-bold md:p-3">
+        <a href="/index.html" class="nav-link flex flex-col md:flex-row items-center justify-center md:justify-start gap-1 md:gap-4 w-40 h-[64px] md:w-full md:h-auto rounded-2xl text-gray-500 hover:bg-black/5 hover:text-gray-900 transition-all text-[11px] md:text-sm font-bold md:p-3">
           <i data-lucide="Home" class="w-[22px] h-[22px] md:w-5 md:h-5"></i>
           <span>Beranda</span>
         </a>
 
-        <a href="#/input" class="nav-link flex flex-col md:flex-row items-center justify-center md:justify-start gap-1 md:gap-4 w-40 h-[64px] md:w-full md:h-auto rounded-2xl text-gray-500 hover:bg-black/5 hover:text-gray-900 transition-all text-[11px] md:text-sm font-bold md:p-3">
+        <a href="/input.html" class="nav-link flex flex-col md:flex-row items-center justify-center md:justify-start gap-1 md:gap-4 w-40 h-[64px] md:w-full md:h-auto rounded-2xl text-gray-500 hover:bg-black/5 hover:text-gray-900 transition-all text-[11px] md:text-sm font-bold md:p-3">
           <i data-lucide="plus-circle" class="w-[22px] h-[22px] md:w-5 md:h-5"></i>
           <span>Input</span>
         </a>
 
         <!-- Tombol Pengaturan -->
         <div class="md:mt-auto md:w-full pt-0 md:pt-4 md:border-t border-black/5">
-          <a href="#/settings" class="nav-link flex flex-col md:flex-row items-center justify-center md:justify-start gap-1 md:gap-4 w-20 h-[64px] md:w-full md:h-auto rounded-2xl text-gray-500 hover:bg-black/5 hover:text-gray-900 transition-all text-[11px] md:text-sm font-bold md:p-3">
+          <a href="/settings.html" class="nav-link flex flex-col md:flex-row items-center justify-center md:justify-start gap-1 md:gap-4 w-20 h-[64px] md:w-full md:h-auto rounded-2xl text-gray-500 hover:bg-black/5 hover:text-gray-900 transition-all text-[11px] md:text-sm font-bold md:p-3">
             <i data-lucide="settings" class="w-[22px] h-[22px] md:w-5 md:h-5"></i>
             <span>Pengaturan</span>
           </a>
@@ -137,122 +137,9 @@
 
       <!-- App Content Container -->
       <main class="flex-1 w-full" id="app-content">
-        
-        <!-- HALAMAN 1: HOME (INPUT & RIWAYAT) -->
-        <section id="page-home" class="page-section hidden animate-fade-in">
-          <div class="mb-6">
-            <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-800">Yuk Catat PengeluaranKu ✍️</h2>
-          </div>
-          
-          <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] mb-8 border border-black/5">
-            <form id="expense-form" class="space-y-3 sm:space-y-4">
-              <div>
-                <input type="text" id="exp-name" required placeholder="Nama Pengeluaran" class="w-full bg-gray-100 rounded-2xl px-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2896FF] transition-shadow placeholder-gray-400 font-medium text-sm sm:text-base">
-              </div>
-              <div class="flex gap-3 sm:gap-4 w-full overflow-hidden">
-                <div class="relative flex-1 min-w-0">
-                  <select id="exp-category" required class="w-full bg-gray-100 rounded-2xl pl-4 pr-10 py-3.5 outline-none focus:ring-2 focus:ring-transparent transition-shadow font-medium text-sm sm:text-base text-gray-700 appearance-none cursor-pointer">
-                    <option value="" disabled selected>Kategori</option>
-                    <option value="Makanan">Makanan</option>
-                    <option value="Transportasi">Transportasi</option>
-                    <option value="Hiburan">Hiburan</option>
-                    <option value="Tagihan">Tagihan</option>
-                    <option value="Lainnya">Lainnya</option>
-                  </select>
-                  <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
-                    <i data-lucide="chevron-down" class="w-5 h-5 text-gray-400"></i>
-                  </div>
-                </div>
 
-                <div class="relative flex-1 min-w-0">
-                  <input type="date" id="exp-date" required onclick="this.showPicker()" class="w-full min-w-0 appearance-none bg-gray-100 rounded-2xl pl-3 sm:pl-4 pr-10 py-3.5 outline-none focus:ring-2 focus:ring-transparent transition-shadow font-medium text-sm sm:text-base tracking-tighter sm:tracking-normal text-gray-700 cursor-pointer">
-                  <div class="absolute inset-y-0 right-0 pr-3 sm:pr-4 flex items-center pointer-events-none">
-                    <i data-lucide="calendar" class="w-5 h-5 text-gray-400"></i>
-                  </div>
-                </div>
-              </div>
-              <div>
-                <div class="relative">
-                  <span class="absolute left-4 top-3.5 text-gray-500 font-bold text-sm sm:text-base">Rp</span>
-                  <input type="text" inputmode="numeric" id="exp-amount" required placeholder="0" class="w-full bg-gray-100 rounded-2xl pl-12 pr-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2896FF] transition-shadow font-bold text-sm sm:text-base">
-                </div>
-              </div>
-              <button type="submit" id="btn-submit-expense" class="w-full bg-gradient-to-b from-[#55E1FF] to-[#2896FF] text-white rounded-2xl px-4 py-3.5 font-semibold mt-2 hover:opacity-90 active:scale-[0.98] transition-all shadow-[0_4px_12px_rgba(40,150,255,0.3)]">
-                Simpan Pengeluaran
-              </button>
-            </form>
-          </div>
-
-          <h3 class="text-xl font-bold tracking-tight mb-4">Riwayat Terbaru</h3>
-          <div class="flex overflow-x-auto gap-2 sm:gap-3 mb-4 pb-2 hide-scrollbar">
-            <button class="filter-bubble-home px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_4px_12px_rgba(40,150,255,0.3)] bg-gradient-to-b from-[#55E1FF] to-[#2896FF] text-white" data-category="Semua">🗂️ Semua</button>
-            <button class="filter-bubble-home px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Makanan">🍔 Makanan</button>
-            <button class="filter-bubble-home px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Transportasi">🚗 Transportasi</button>
-            <button class="filter-bubble-home px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Hiburan">🎮 Hiburan</button>
-            <button class="filter-bubble-home px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Tagihan">🧾 Tagihan</button>
-            <button class="filter-bubble-home px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-[0_2px_8px_rgb(0,0,0,0.04)] bg-white text-gray-500 hover:text-gray-900 ring-1 ring-inset ring-black/5" data-category="Lainnya">📦 Lainnya</button>
-          </div>
-
-          <!-- ============================================== -->
-          <!-- PENCARIAN & FILTER LANJUTAN                    -->
-          <!-- ============================================== -->
-          <div class="relative mb-6 z-20">
-            <div class="flex gap-2">
-              
-              <!-- Input Pencarian -->
-              <div class="relative flex-1 min-w-0">
-                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <i data-lucide="search" class="w-5 h-5 text-slate-400"></i>
-                </div>
-                <input type="text" id="search-history" placeholder="Cari pengeluaran..." class="w-full bg-white shadow-[0_2px_10px_rgb(0,0,0,0.02)] border border-black/5 rounded-2xl pl-11 pr-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2896FF]/50 transition-all font-medium text-sm text-slate-700 placeholder-slate-400">
-              </div>
-              
-              <!-- Tombol Buka Panel Filter -->
-              <button id="btn-advanced-filter" class="w-[52px] flex-shrink-0 bg-white shadow-[0_2px_10px_rgb(0,0,0,0.02)] border border-black/5 rounded-2xl flex items-center justify-center text-slate-500 hover:text-[#2896FF] transition-all hover:shadow-md active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#2896FF]/50">
-                <i data-lucide="sliders-horizontal" class="w-5 h-5"></i>
-              </button>
-            </div>
-
-            <!-- Panel Dropdown Filter -->
-            <div id="advanced-filter-panel" class="hidden absolute top-full right-0 mt-3 w-full sm:w-[340px] bg-white rounded-3xl shadow-[0_16px_40px_rgb(0,0,0,0.12)] border border-black/5 p-5 animate-fade-in origin-top-right">
-              
-              <h4 class="text-sm font-bold text-slate-800 mb-4">Filter Lanjutan</h4>
-              
-              <!-- Filter Nominal -->
-              <div class="space-y-2 mb-4">
-                <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Nominal (Rp)</label>
-                <div class="flex items-center gap-2">
-                  <input type="text" id="filter-min-amount" inputmode="numeric" placeholder="Lebih besar dari" class="w-full bg-slate-50 border border-black/5 rounded-xl px-3 py-2.5 outline-none focus:ring-2 focus:ring-[#2896FF]/50 text-sm font-semibold text-slate-700 placeholder-slate-400">
-                  <span class="text-slate-300">-</span>
-                  <input type="text" id="filter-max-amount" inputmode="numeric" placeholder="Kurang dari" class="w-full bg-slate-50 border border-black/5 rounded-xl px-3 py-2.5 outline-none focus:ring-2 focus:ring-[#2896FF]/50 text-sm font-semibold text-slate-700 placeholder-slate-400">
-                </div>
-              </div>
-
-              <!-- Filter Tanggal -->
-              <div class="space-y-2 mb-6">
-                <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Tanggal</label>
-                <div class="flex items-center gap-2">
-                  <input type="date" id="filter-start-date" onclick="this.showPicker()" class="w-full bg-slate-50 border border-black/5 rounded-xl px-2 sm:px-3 py-2.5 outline-none focus:ring-2 focus:ring-[#2896FF]/50 text-xs sm:text-sm font-semibold text-slate-700 cursor-pointer">
-                  <span class="text-slate-300">-</span>
-                  <input type="date" id="filter-end-date" onclick="this.showPicker()" class="w-full bg-slate-50 border border-black/5 rounded-xl px-2 sm:px-3 py-2.5 outline-none focus:ring-2 focus:ring-[#2896FF]/50 text-xs sm:text-sm font-semibold text-slate-700 cursor-pointer">
-                </div>
-              </div>
-
-              <!-- Tombol Aksi -->
-              <div class="flex gap-3">
-                <button id="btn-reset-filter" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-sm font-bold transition-colors active:scale-95">Reset</button>
-                <button id="btn-apply-filter" class="flex-1 py-3 bg-gradient-to-b from-[#55E1FF] to-[#2896FF] text-white rounded-xl text-sm font-bold shadow-md hover:opacity-90 transition-all active:scale-95">Terapkan</button>
-              </div>
-
-            </div>
-          </div>
-          <!-- ============================================== -->
-
-          <div id="expense-list" class="space-y-3"></div>
-        </section>
-
-        <!-- HALAMAN 2: ANALYTICS -->
-        <section id="page-analytics" class="page-section hidden animate-fade-in">
+        <!-- HALAMAN 2: ANALYTICS (DASHBOARD) -->
+        <section id="page-analytics" class="page-section animate-fade-in">
 
           <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
             
@@ -293,7 +180,7 @@
             </div>
           </div>
 
-          <a href="#/input" class="flex justify-center items-center gap-2 w-full bg-gradient-to-b from-[#55E1FF] to-[#2896FF] text-white rounded-[1.25rem] px-4 py-4 mb-6 font-semibold shadow-[0_8px_30px_rgb(0,0,0,0.04)]  transition-all cursor-pointer">
+          <a href="/input.html" class="flex justify-center items-center gap-2 w-full bg-gradient-to-b from-[#55E1FF] to-[#2896FF] text-white rounded-[1.25rem] px-4 py-4 mb-6 font-semibold shadow-[0_8px_30px_rgb(0,0,0,0.04)]  transition-all cursor-pointer">
             <i data-lucide="plus-circle" class="w-5 h-5"></i>
             <span>Mulai Catat Pengeluaran</span>
           </a>
@@ -429,167 +316,11 @@
           </div>
         </section>
 
-        <!-- [BARU] HALAMAN 3: PENGATURAN -->
-        <section id="page-settings" class="page-section hidden animate-fade-in">
-          
-          <div class="mb-6">
-            <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-800">Profil Saya</h2>
-          </div>
-
-          <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] mb-8 border border-black/5 flex flex-col items-center">
-            
-            <!-- ============================== -->
-            <!-- MODE LIHAT PROFIL (VIEW)       -->
-            <!-- ============================== -->
-<!-- ============================== -->
-            <!-- MODE LIHAT PROFIL (VIEW)       -->
-            <!-- ============================== -->
-            <div id="profile-view-mode" class="w-full flex flex-col items-center animate-fade-in">
-              
-              <!-- 1. Area Header (Foto, Nama, Email) -->
-              <div class="w-full flex flex-col items-center relative mb-8">
-                <!-- Aksen Glow di Belakang Avatar -->
-                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-[#2896FF]/20 rounded-full blur-2xl pointer-events-none"></div>
-                
-                <div class="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full shadow-md border-[4px] border-white mx-auto mb-4 bg-slate-50 ring-1 ring-black/5 z-10">
-                  <img id="display-profile-avatar" src="https://api.dicebear.com/8.x/dylan/svg?seed=Felix&backgroundColor=transparent" alt="Avatar" class="w-full h-full object-cover rounded-full">
-                </div>
-
-                <h3 id="display-profile-name" class="text-2xl sm:text-3xl font-bold text-[#1E293B] tracking-tight relative z-10">Memuat...</h3>
-                <p id="display-profile-email" class="text-sm font-medium text-slate-500 mt-1 relative z-10">memuat@email.com</p>
-                
-                <!-- Tombol Edit Profil (Kecil di bawah nama) -->
-                <button id="btn-edit-profile-mode" class="mt-4 px-6 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-full text-sm font-bold transition-all active:scale-95 flex items-center justify-center gap-2 relative z-10">
-                  <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
-                  <span>Edit Profil</span>
-                </button>
-              </div>
-
-              <!-- 2. Statistik Aktivitas User (Quick Stats) -->
-              <div class="grid grid-cols-2 gap-3 sm:gap-4 w-full mb-8">
-                <div class="bg-slate-50 rounded-2xl p-4 border border-black/5 text-center">
-                  <div class="w-8 h-8 rounded-full bg-[#2896FF]/10 text-[#2896FF] flex items-center justify-center mx-auto mb-2">
-                    <i data-lucide="calendar-check" class="w-4 h-4"></i>
-                  </div>
-                  <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Hari Aktif</p>
-                  <h4 class="text-xl font-bold text-slate-800" id="stat-active-days">0</h4>
-                </div>
-                <div class="bg-slate-50 rounded-2xl p-4 border border-black/5 text-center">
-                  <div class="w-8 h-8 rounded-full bg-orange-500/10 text-orange-500 flex items-center justify-center mx-auto mb-2">
-                    <i data-lucide="receipt" class="w-4 h-4"></i>
-                  </div>
-                  <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Total Catatan</p>
-                  <h4 class="text-xl font-bold text-slate-800" id="stat-total-entries">0</h4>
-                </div>
-              </div>
-
-              <!-- 3. List Menu Pengaturan -->
-              <div class="w-full space-y-2 mb-8">
-                <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 px-2">Pengaturan Akun</h4>
-                
-                <!-- Menu Keamanan -->
-                <button class="w-full flex items-center justify-between p-4 bg-white hover:bg-slate-50 border border-transparent hover:border-black/5 rounded-2xl transition-colors group cursor-pointer">
-                  <div class="flex items-center gap-4">
-                    <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500 group-hover:text-[#2896FF] group-hover:bg-[#2896FF]/10 transition-colors">
-                      <i data-lucide="shield" class="w-5 h-5"></i>
-                    </div>
-                    <span class="font-bold text-slate-700">Keamanan & Sandi</span>
-                  </div>
-                  <i data-lucide="chevron-right" class="w-5 h-5 text-slate-300 group-hover:text-slate-500 transition-colors"></i>
-                </button>
-
-                <!-- Menu Preferensi -->
-                <button class="w-full flex items-center justify-between p-4 bg-white hover:bg-slate-50 border border-transparent hover:border-black/5 rounded-2xl transition-colors group cursor-pointer">
-                  <div class="flex items-center gap-4">
-                    <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500 group-hover:text-[#2896FF] group-hover:bg-[#2896FF]/10 transition-colors">
-                      <i data-lucide="settings-2" class="w-5 h-5"></i>
-                    </div>
-                    <span class="font-bold text-slate-700">Preferensi Aplikasi</span>
-                  </div>
-                  <i data-lucide="chevron-right" class="w-5 h-5 text-slate-300 group-hover:text-slate-500 transition-colors"></i>
-                </button>
-
-                <!-- Menu Bantuan -->
-                <button class="w-full flex items-center justify-between p-4 bg-white hover:bg-slate-50 border border-transparent hover:border-black/5 rounded-2xl transition-colors group cursor-pointer">
-                  <div class="flex items-center gap-4">
-                    <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500 group-hover:text-[#2896FF] group-hover:bg-[#2896FF]/10 transition-colors">
-                      <i data-lucide="help-circle" class="w-5 h-5"></i>
-                    </div>
-                    <span class="font-bold text-slate-700">Pusat Bantuan</span>
-                  </div>
-                  <i data-lucide="chevron-right" class="w-5 h-5 text-slate-300 group-hover:text-slate-500 transition-colors"></i>
-                </button>
-              </div>
-
-              <hr class="border-black/5 mb-6 w-full">
-
-              <!-- Tombol Keluar -->
-              <button id="btn-logout" class="w-full flex items-center justify-center gap-2 bg-red-50 text-red-500 rounded-2xl px-4 py-3.5 font-bold hover:bg-red-100 active:scale-[0.98] transition-all border border-red-100">
-                <i data-lucide="log-out" class="w-5 h-5"></i>
-                <span>Keluar dari Akun</span>
-              </button>
-            </div>
-
-            <!-- ============================== -->
-            <!-- MODE EDIT PROFIL (FORM)        -->
-            <!-- ============================== -->
-            <form id="profile-form" class="hidden space-y-6 animate-fade-in w-full">
-              
-              <!-- Header Form Edit -->
-              <div class="flex items-center gap-3 mb-6 pb-4 border-b border-black/5">
-                 <button type="button" id="btn-cancel-edit" class="p-2 -ml-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600 rounded-full transition-colors active:scale-95 flex items-center justify-center">
-                   <i data-lucide="arrow-left" class="w-5 h-5"></i>
-                 </button>
-                 <h3 class="text-lg font-bold text-slate-800">Edit Profil</h3>
-              </div>
-
-              <!-- Pilihan Avatar -->
-              <div>
-                <label class="block text-sm font-bold text-slate-700 mb-3">Pilih Avatar Baru</label>
-                <div class="flex gap-3 overflow-x-auto pb-3 hide-scrollbar" id="avatar-selection">
-                  <button type="button" class="avatar-btn flex-shrink-0 relative w-16 h-16 rounded-full border-[3px] border-transparent hover:border-[#2896FF]/50 focus:border-[#2896FF] transition-all overflow-hidden bg-slate-100 shadow-sm" data-avatar="1">
-                    <img src="https://api.dicebear.com/9.x/dylan/svg?seed=Felix&backgroundColor=transparent" alt="Avatar 1" class="w-full h-full object-cover">
-                  </button>
-                  <button type="button" class="avatar-btn flex-shrink-0 relative w-16 h-16 rounded-full border-[3px] border-transparent hover:border-[#2896FF]/50 focus:border-[#2896FF] transition-all overflow-hidden bg-yellow-100 shadow-sm" data-avatar="2">
-                    <img src="https://api.dicebear.com/9.x/dylan/svg?seed=Aneka&backgroundColor=transparent" alt="Avatar 2" class="w-full h-full object-cover">
-                  </button>
-                  <button type="button" class="avatar-btn flex-shrink-0 relative w-16 h-16 rounded-full border-[3px] border-transparent hover:border-[#2896FF]/50 focus:border-[#2896FF] transition-all overflow-hidden bg-red-100 shadow-sm" data-avatar="3">
-                    <img src="https://api.dicebear.com/9.x/dylan/svg?seed=Mimi&backgroundColor=transparent" alt="Avatar 3" class="w-full h-full object-cover">
-                  </button>
-                  <button type="button" class="avatar-btn flex-shrink-0 relative w-16 h-16 rounded-full border-[3px] border-transparent hover:border-[#2896FF]/50 focus:border-[#2896FF] transition-all overflow-hidden bg-green-100 shadow-sm" data-avatar="4">
-                    <img src="https://api.dicebear.com/9.x/dylan/svg?seed=Brooklyn&backgroundColor=transparent" alt="Avatar 4" class="w-full h-full object-cover">
-                  </button>
-                  <button type="button" class="avatar-btn flex-shrink-0 relative w-16 h-16 rounded-full border-[3px] border-transparent hover:border-[#2896FF]/50 focus:border-[#2896FF] transition-all overflow-hidden bg-blue-100 shadow-sm" data-avatar="5">
-                    <img src="https://api.dicebear.com/9.x/dylan/svg?seed=Brian&backgroundColor=transparent" alt="Avatar 5" class="w-full h-full object-cover">
-                  </button>
-                </div>
-              </div>
-
-              <!-- Nama Panggilan -->
-              <div>
-                <label for="profile-name" class="block text-sm font-bold text-slate-700 mb-2">Nama Panggilan</label>
-                <div class="relative">
-                  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <i data-lucide="user" class="w-5 h-5 text-slate-400"></i>
-                  </div>
-                  <input type="text" id="profile-name" required placeholder="Nama Anda" class="w-full bg-gray-100 rounded-2xl pl-11 pr-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2896FF] transition-shadow placeholder-gray-400 font-medium text-sm sm:text-base">
-                </div>
-              </div>
-
-              <!-- Tombol Simpan -->
-              <button type="submit" id="btn-save-profile" class="w-full bg-gradient-to-b from-[#55E1FF] to-[#2896FF] text-white rounded-2xl px-4 py-3.5 font-bold hover:opacity-90 active:scale-[0.98] transition-all shadow-[0_4px_12px_rgba(40,150,255,0.3)] mt-2">
-                <span>Simpan Perubahan</span>
-              </button>
-            </form>
-
-          </div>
-        </section>
-
       </main>
     </div>
 
   </div> 
 
-  <script type="module" src="/src/main.js"></script>
+  <script type="module" src="/src/index.js"></script>
 </body>
 </html>
