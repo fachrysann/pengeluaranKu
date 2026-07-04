@@ -67,3 +67,18 @@
 .lucide {
   stroke-width: 2.2px;
 }
+
+/* Override gaya navigasi link pada gradient background mobile */
+@media (max-width: 767px) {
+  nav .nav-link {
+    color: rgba(255, 255, 255, 0.7) !important;
+  }
+  nav .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+  }
+  nav .nav-link.active {
+    background-color: rgba(255, 255, 255, 0.25) !important;
+    color: #ffffff !important;
+  }
+}

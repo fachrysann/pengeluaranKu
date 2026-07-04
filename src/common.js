@@ -129,9 +129,11 @@ export const highlightNavigation = () => {
     const hrefNormalized = href === '/' ? '/index.html' : href;
     const isMatch = pathNormalized.endsWith(hrefNormalized);
     if (isMatch) {
+      link.classList.add('active');
       link.classList.add('text-[#2896FF]', 'bg-[#2896FF]/10'); 
       link.classList.remove('text-gray-500'); 
     } else { 
+      link.classList.remove('active');
       link.classList.remove('text-[#2896FF]', 'bg-[#2896FF]/10'); 
       link.classList.add('text-gray-500'); 
     }
